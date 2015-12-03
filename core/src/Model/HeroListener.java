@@ -31,8 +31,8 @@ public class HeroListener extends Listener {
 			else
 			
 			{				
-				this.heroArr.arr[hero.id].x = hero.x;
-				this.heroArr.arr[hero.id].y = hero.y;
+				this.heroArr.arr[hero.id] = hero;
+				
 			}
 			if(hero.id >= this.heroArr.size)
 			{

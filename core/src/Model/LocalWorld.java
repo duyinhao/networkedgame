@@ -19,57 +19,143 @@ public class LocalWorld {
 	//Hero hero ;
 	boolean online;
 	
-
+	public User user;
+	public Hero hero;
 	public HeroArr heroArr;
+	public int[][] collisionMapArr;
+	public int[][] rightColMap;
+	public int[][] leftColMap;
+	public int[][] upColMap;
+	public int[][] downColMap;
+	
+
 	
 	
-	String ipAddress;
-	int udpPort;
-	int tcpPort;
-	public Client client;
 	
-	
-	
-	public LocalWorld( String ipAddress, int udpPort, int tcpPort, User user)
+	public LocalWorld(  )
 	{
 		
 		
-		
-		this.ipAddress = ipAddress;
-		this.udpPort = udpPort;
-		this.tcpPort = tcpPort;
+		hero = new Hero(1,1);
+		user = new User("test");
 		heroArr = new HeroArr();
 		
 		
 		
-        client = new Client();
-		 Kryo kryo = client.getKryo();
+       
 		  
 		  
 		 
-		  kryo.register(Hero.class);
-		  kryo.register(IDResponse.class);
-		 //kryo.register(SomeRequest.class);
-		 //kryo.register(SomeResponse.class);
-		
-		
-		client.start();
-		try {
-			client.connect(100000, ipAddress,udpPort , tcpPort );
-			//client.connect(5000, "127.0.0.1",54555 , 54777 );
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//change this to a proper request
-		client.sendUDP(new Hero(1,1));
-		System.out.println("First hero packet sent from game");
-	
-
-		client.addListener(new IDListener(user));
-		client.addListener(new HeroListener(heroArr));
+		  
 		
 		
 	}
+	public void loadColMap()
+	{
+		int w =collisionMapArr.length;
+		int h = collisionMapArr[0].length;
+		
+		  rightColMap = new int[w][h];
+		  leftColMap = new int[w][h];
+		  upColMap = new int[w][h];
+		 downColMap = new int[w][h];
+		
+		for(int y = 0;  y < collisionMapArr[0].length; y++ )
+		{
+			//left
+			for(int x = 0; x < collisionMapArr.length ; x++)
+			{
+				
+				if(collisionMapArr[x][y] == 1 )
+				{
+					leftColMap[x][y] = -1;
+					
+				}
+				else if(x==0    )
+				{
+					leftColMap[x][y] = 0;
+				}
+				else
+				{
+					leftColMap[x][y] = leftColMap[x-1][y] + 1;
+					
+				}
+				
+				
+				
+				
+				
+			}
+			//right
+			for(int x = collisionMapArr.length -1; x >= 0  ; x--)
+			{
+				
+				if(collisionMapArr[x][y] == 1 )
+				{
+					rightColMap[x][y] = -1;
+					
+				}
+				else if(x == collisionMapArr.length-1)
+				{
+					rightColMap[x][y] = 0;
+				}
+				else
+				{
+					rightColMap[x][y] = rightColMap[x+1][y]+1;
+				}
+				
+				
+			}
+			
+		}
+		for(int x = 0;  x < collisionMapArr.length; x++ )
+		{
+			for(int y = 0 ; y < collisionMapArr[0].length; y++)
+			{
+				if(collisionMapArr[x][y] == 1 )
+				{
+					downColMap[x][y] = -1;
+					
+				}
+				else if(y==0)
+				{
+					downColMap[x][y] = 0;
+				}
+				else
+				{
+					downColMap[x][y] = downColMap[x][y-1] + 1;
+				}
+			}
+			for(int y = collisionMapArr[0].length -1; y >=0; y--)
+			{
+				if(collisionMapArr[x][y] == 1 )
+				{
+					upColMap[x][y] = -1;
+					
+				}
+				else if(y == collisionMapArr[0].length-1)
+				{
+					upColMap[x][y] = 0;
+				}
+				else
+				{
+					upColMap[x][y] = upColMap[x][y+1] + 1;
+				}
+				
+			}
+			
+			
+		
+		}
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
 }
