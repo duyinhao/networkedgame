@@ -21,6 +21,7 @@ public class Controller {
 	{
 		float hSpeed = Hero.SPEEDPERSECOND*deltaTime;
 		float vSpeed = Hero.SPEEDPERSECOND*deltaTime;
+		//System.out.println(wrl);
 		if(wrl.user.heroID != -1)
 		{
 			wrl.hero = wrl.heroArr.arr[wrl.user.heroID];

@@ -65,7 +65,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		
 		
-		wrl = new LocalWorld();
+		
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccer.png"));
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 42);
@@ -126,6 +126,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		  kryo.register(IDResponse.class);
 		 kryo.register(DStates.class);
 		 kryo.register(HStates.class);
+		 
+
 		
 		
 		client.start();
@@ -137,20 +139,26 @@ public class MyGdxGame extends ApplicationAdapter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//change this to a proper request
-		client.sendTCP(new Hero(1,1));
-		System.out.println("First hero packet sent from game");
+		
 	
+		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
 
+		wrl = new LocalWorld(layer);
+		
+		//always add the listener first before the requests otherwise wont register response
+		//pehpaps a different structure is need to avoid this annoying bug
 		client.addListener(new IDListener(wrl.user));
 		client.addListener(new HeroListener(wrl.heroArr));
 		
+		//change this to a proper request
+		client.sendTCP(new Hero(1,1));
+		System.out.println("First hero packet sent from game");
 		
 		
 		
 		
-		serverController = new ServerController(client, wrl);
-		userController = new Controller(Gdx.input, wrl, client);
+		
+		
 		
 		
 		
@@ -158,32 +166,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		int height = Integer.parseInt(tiledMap.getProperties().get("height").toString());
 	
 		
-		wrl.collisionMapArr = new int[width][height];
+
 		
 	
-		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-		
-		TiledMapTile tmpTile;
-		for(int x = 0; x < width; x++)
-		{
-			for(int y = 0; y < height; y++)
-			{
-				System.out.println(y+" "+x);
-				tmpTile = layer.getCell(x, y).getTile();
-				System.out.println(tmpTile.getId());
-				
-				if(!tmpTile.getProperties().containsKey("Collision")  )
-				{
-					wrl.collisionMapArr[x][y] = 0;
-				}
-				else
-				{
-					wrl.collisionMapArr[x][y] = Integer.parseInt(tmpTile.getProperties().get("Collision",String.class)) ;
-					System.out.println("has property");
-				}
-			}
-			
-		}
 		
 		
 		
@@ -195,35 +180,36 @@ public class MyGdxGame extends ApplicationAdapter {
 			{
 				temp = temp + wrl.collisionMapArr[x][y] ; 
 			}
-			System.out.println(temp);
+			//System.out.println(temp);
 		}
+		serverController = new ServerController(client, wrl);
+		userController = new Controller(Gdx.input, wrl, client);
 		
-		
-		wrl.loadColMap();
-		System.out.println("left");
-		temp="";
-		for(int y = height-1; y >= 0; y--)
-		{
-			temp="";
-			for(int x = 0; x < width; x++)
-			{
-				temp = temp + wrl.leftColMap[x][y] ; 
-			}
-			System.out.println(temp);
-		}
-		
-		System.out.println("right");
-		temp="";
-		for(int y = height-1; y >= 0; y--)
-		{
-			temp="";
-			for(int x = 0; x < width; x++)
-			{
-				temp = temp + wrl.rightColMap[x][y] ; 
-			}
-			System.out.println(temp);
-		}
-		
+//		wrl.loadColMap();
+//		System.out.println("left");
+//		temp="";
+//		for(int y = height-1; y >= 0; y--)
+//		{
+//			temp="";
+//			for(int x = 0; x < width; x++)
+//			{
+//				temp = temp + wrl.leftColMap[x][y] ; 
+//			}
+//			System.out.println(temp);
+//		}
+//		
+//		System.out.println("right");
+//		temp="";
+//		for(int y = height-1; y >= 0; y--)
+//		{
+//			temp="";
+//			for(int x = 0; x < width; x++)
+//			{
+//				temp = temp + wrl.rightColMap[x][y] ; 
+//			}
+//			System.out.println(temp);
+//		}
+//		
 		System.out.println("down");
 		temp="";
 		for(int y = height-1; y >= 0; y--)
@@ -231,23 +217,23 @@ public class MyGdxGame extends ApplicationAdapter {
 			temp="";
 			for(int x = 0; x < width; x++)
 			{
-				temp = temp + wrl.downColMap[x][y] ; 
+				temp = temp + wrl.colSystem.downColMap[x][y] ; 
 			}
 			System.out.println(temp);
 		}
 		
-		System.out.println("up");
-		temp="";
-		for(int y = height-1; y >= 0; y--)
-		{
-			temp="";
-			for(int x = 0; x < width; x++)
-			{
-				temp = temp + wrl.upColMap[x][y] ; 
-			}
-			System.out.println(temp);
-		}
-		
+//		System.out.println("up");
+//		temp="";
+//		for(int y = height-1; y >= 0; y--)
+//		{
+//			temp="";
+//			for(int x = 0; x < width; x++)
+//			{
+//				temp = temp + wrl.upColMap[x][y] ; 
+//			}
+//			System.out.println(temp);
+//		}
+//		
 		
 		
 		
@@ -323,7 +309,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		batch.end();
 		userController.update(deltaTime);
-		System.out.println(stateTime);
+		//System.out.println(stateTime);
+		
 		
 		
 	}

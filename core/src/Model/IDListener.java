@@ -17,7 +17,7 @@ public class IDListener  extends Listener {
 		if(object instanceof IDResponse)
 		{
 			this.user.heroID = ((IDResponse)object).id;
-			
+			System.out.println("received ID:"+ user.heroID);
 			
 		}
 		

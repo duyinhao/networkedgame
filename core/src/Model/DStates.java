@@ -1,5 +1,5 @@
 package Model;
 
 public enum DStates {
-	RIGHT, LEFT
+	RIGHT, LEFT, UP, DOWN
 }

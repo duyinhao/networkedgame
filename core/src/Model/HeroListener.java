@@ -21,19 +21,17 @@ public class HeroListener extends Listener {
 		
 		if(object instanceof Hero)
 		{
+			
 			Hero hero = ((Hero)object);
 			
+			System.out.println("received hero with ID:"+hero.id);
 			
-			if(heroArr.arr[hero.id] == null)
-			{
-				heroArr.arr[hero.id] = hero;
-			}
-			else
 			
-			{				
+			
+							
 				this.heroArr.arr[hero.id] = hero;
 				
-			}
+			
 			if(hero.id >= this.heroArr.size)
 			{
 				this.heroArr.size = hero.id+1;

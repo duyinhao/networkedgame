@@ -9,6 +9,9 @@ package Model;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -22,136 +25,64 @@ public class LocalWorld {
 	public User user;
 	public Hero hero;
 	public HeroArr heroArr;
-	public int[][] collisionMapArr;
-	public int[][] rightColMap;
-	public int[][] leftColMap;
-	public int[][] upColMap;
-	public int[][] downColMap;
-	
 
+	public int[][] collisionMapArr;
+
+	public Collision colSystem;
 	
-	
-	
-	public LocalWorld(  )
+	TiledMapTileLayer layer;
+	public LocalWorld(TiledMapTileLayer layer  )
 	{
-		
+		this.layer = layer;
 		
 		hero = new Hero(1,1);
 		user = new User("test");
 		heroArr = new HeroArr();
+		collisionMapArr= new int[layer.getWidth()][layer.getHeight()];
 		
 		
 		
-       
-		  
+		
+		
+		TiledMapTile tmpTile;
+		for(int x = 0; x < layer.getWidth(); x++)
+		{
+			for(int y = 0; y < layer.getHeight(); y++)
+			{
+				//System.out.println(y+" "+x);
+				tmpTile = layer.getCell(x, y).getTile();
+				//System.out.println(tmpTile.getId());
+				
+				if(!tmpTile.getProperties().containsKey("Collision")  )
+				{
+					collisionMapArr[x][y] = 0;
+				}
+				else
+				{
+					collisionMapArr[x][y] = Integer.parseInt(tmpTile.getProperties().get("Collision",String.class)) ;
+					//System.out.println("has property");
+				}
+			}
+			
+		}
+		
+		colSystem = new Collision(collisionMapArr,(int)layer.getTileHeight());
 		  
 		 
-		  
+
+		
 		
 		
 	}
-	public void loadColMap()
+	
+	public void moveHero(Vector2 velocity, float deltaTime, int heroID)
 	{
-		int w =collisionMapArr.length;
-		int h = collisionMapArr[0].length;
-		
-		  rightColMap = new int[w][h];
-		  leftColMap = new int[w][h];
-		  upColMap = new int[w][h];
-		 downColMap = new int[w][h];
-		
-		for(int y = 0;  y < collisionMapArr[0].length; y++ )
-		{
-			//left
-			for(int x = 0; x < collisionMapArr.length ; x++)
-			{
+		//heroArr.arr[heroID]
 				
-				if(collisionMapArr[x][y] == 1 )
-				{
-					leftColMap[x][y] = -1;
-					
-				}
-				else if(x==0    )
-				{
-					leftColMap[x][y] = 0;
-				}
-				else
-				{
-					leftColMap[x][y] = leftColMap[x-1][y] + 1;
-					
-				}
-				
-				
-				
-				
-				
-			}
-			//right
-			for(int x = collisionMapArr.length -1; x >= 0  ; x--)
-			{
-				
-				if(collisionMapArr[x][y] == 1 )
-				{
-					rightColMap[x][y] = -1;
-					
-				}
-				else if(x == collisionMapArr.length-1)
-				{
-					rightColMap[x][y] = 0;
-				}
-				else
-				{
-					rightColMap[x][y] = rightColMap[x+1][y]+1;
-				}
-				
-				
-			}
-			
-		}
-		for(int x = 0;  x < collisionMapArr.length; x++ )
-		{
-			for(int y = 0 ; y < collisionMapArr[0].length; y++)
-			{
-				if(collisionMapArr[x][y] == 1 )
-				{
-					downColMap[x][y] = -1;
-					
-				}
-				else if(y==0)
-				{
-					downColMap[x][y] = 0;
-				}
-				else
-				{
-					downColMap[x][y] = downColMap[x][y-1] + 1;
-				}
-			}
-			for(int y = collisionMapArr[0].length -1; y >=0; y--)
-			{
-				if(collisionMapArr[x][y] == 1 )
-				{
-					upColMap[x][y] = -1;
-					
-				}
-				else if(y == collisionMapArr[0].length-1)
-				{
-					upColMap[x][y] = 0;
-				}
-				else
-				{
-					upColMap[x][y] = upColMap[x][y+1] + 1;
-				}
-				
-			}
-			
-			
-		
-		}
-		
-		
 		
 		
 	}
+	
 	
 	
 	
