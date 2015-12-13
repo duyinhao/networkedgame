@@ -319,7 +319,7 @@ public class MyGdxGame extends ApplicationAdapter {
 				
 			   
 				batch.draw(currentFrame, currentHero.position.x, currentHero.position.y);
-			
+				
 			}	
 		}
 		
