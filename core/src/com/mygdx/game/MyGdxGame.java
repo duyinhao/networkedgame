@@ -165,7 +165,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		client.addListener(new HeroListener(wrl.heroArr));
 		
 		//change this to a proper request
-		client.sendTCP(new Hero(400,400));
+		client.sendTCP(new Hero(400,400,40,42));
 		System.out.println("First hero packet sent from game");
 		
 		

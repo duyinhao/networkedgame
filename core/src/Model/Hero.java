@@ -31,6 +31,15 @@ public Vector2 velocity;
 		this.velocity = new Vector2(0,0);
 	}
 	
+	public Hero(int x , int y, int width, int height)
+	{
+		super(new Vector2(x,y), width,height);
+		id = -1;
+		this.direction = DStates.RIGHT;
+		this.status = HStates.STAND;
+		this.velocity = new Vector2(0,0);
+	}
+	
 	public void setX(float x)
 	{
 		super.position.x=x;
