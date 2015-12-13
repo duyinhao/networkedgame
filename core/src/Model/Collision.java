@@ -111,7 +111,7 @@ public class Collision {
 		
 		
 	}
-	public int getCollision(int x, int y ,DStates dir )
+	public int getDistToWall(int x, int y ,DStates dir )
 	{	
 		
 		int tileX;

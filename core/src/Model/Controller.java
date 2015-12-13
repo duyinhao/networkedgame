@@ -1,5 +1,6 @@
 package Model;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.esotericsoftware.kryonet.Client;
@@ -27,20 +28,21 @@ public class Controller {
 			wrl.hero = wrl.heroArr.arr[wrl.user.heroID];
 		 if(Gdx.input.isKeyPressed(Input.Keys.A))
 		 {
-			 wrl.hero.setX(wrl.hero.getX()-hSpeed); 
+			 wrl.hero.velocity.x = -1*hSpeed; 
 			 wrl.hero.direction = DStates.LEFT;
 			 wrl.hero.status = HStates.RUN;
 			 client.sendUDP(wrl.hero); 
 		 }
 		 else if(Gdx.input.isKeyPressed(Input.Keys.D))
 		 {
-			 wrl.hero.setX(wrl.hero.getX()+hSpeed); 
+			 wrl.hero.velocity.x = hSpeed;  
 			 wrl.hero.direction = DStates.RIGHT;
 			 wrl.hero.status = HStates.RUN;
 			 client.sendUDP(wrl.hero); 
 		 }
 		 else 
 		 {
+			
 			 if(wrl.hero.status != HStates.STAND)
 			 {
 				 wrl.hero.status = HStates.STAND;
@@ -49,12 +51,13 @@ public class Controller {
 		 }
 		 if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
 		 {
-			 wrl.hero.setY(wrl.hero.getY()+vSpeed);
+			 wrl.hero.velocity.y = vSpeed;
+			 
 			 client.sendUDP(wrl.hero); 
 		 }
 		 if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
 		 {
-			 wrl.hero.setY(wrl.hero.getY()-vSpeed);
+			 wrl.hero.velocity.y = -1*vSpeed;
 			 //wrl.hero.status = HStates.;
 			 client.sendUDP(wrl.hero); 
 		 }

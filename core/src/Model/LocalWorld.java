@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -69,19 +68,56 @@ public class LocalWorld {
 		colSystem = new Collision(collisionMapArr,(int)layer.getTileHeight());
 		  
 		 
-
 		
 		
+		
+		
+	}
+	public void upate(float deltaTime)
+	{
+		Hero hero;
+		for(int i = 0; i < heroArr.size; i++)
+		{	
+			
+			hero =heroArr.arr[i];
+			
+			if(heroArr.arr[i]!=null)
+			{	
+				
+				Vector2 movementVec = new Vector2(0,0);
+				Vector2 sclVelocity = hero.velocity.scl(deltaTime);
+				
+				
+				//the distance to the wall for RIGHT and UP is subtracted by 1 so that if the character were to move by (distance - 1) they would still be on the same tile
+				//this is because by convention when a point is on a border it is considered part of the top block or the right block
+				if(hero.velocity.x >0)
+				{
+					movementVec.x = Math.min( sclVelocity.x , colSystem.getDistToWall((int)hero.position.x, (int)hero.position.y, DStates.RIGHT)-1 );
+				}
+				else if(hero.velocity.x <0)
+				{
+					movementVec.x = Math.max( sclVelocity.x , -1*colSystem.getDistToWall((int)hero.position.x, (int)hero.position.y, DStates.LEFT) );
+				}
+				
+				if(hero.velocity.y>0)
+				{
+					movementVec.y = Math.min(sclVelocity.y, colSystem.getDistToWall((int)hero.position.x, (int)hero.position.y, DStates.UP)-1) ;
+				}
+				else if(hero.velocity.y<0)
+				{
+					movementVec.y = Math.max(sclVelocity.y, -1*colSystem.getDistToWall((int)hero.position.x, (int)hero.position.y, DStates.DOWN)) ;
+				}
+					
+					
+				hero.position.add(movementVec);
+				
+				
+				
+			}
+		}
 		
 	}
 	
-	public void moveHero(Vector2 velocity, float deltaTime, int heroID)
-	{
-		//heroArr.arr[heroID]
-				
-		
-		
-	}
 	
 	
 	

@@ -3,49 +3,46 @@ package Model;
 
 
 
-public class Hero {
-float x;
-float y;
+
+
+public class Hero extends Entity {
+
 public int id;
 public DStates direction;
 public HStates status;
-public static float SPEEDPERSECOND = 500;
+public static float SPEEDPERSECOND = 5000;
+public Vector2 velocity;
 	public Hero()
 	{
-	this.x = 0;
-	this.y = 0;
-	id = -1;
-	this.direction = DStates.RIGHT;
-	this.status = HStates.STAND;
+		super(new Vector2(0,0), 0,0);
+		
+		
+		this.id = -1;
+		this.direction = DStates.RIGHT;
+		this.status = HStates.STAND;
+		this.velocity = new Vector2(0,0);
 	}
 	public Hero(int x , int y)
 	{
-		this.x = x;
-		this.y = y;
+		super(new Vector2(x,y), 0,0);
 		id = -1;
 		this.direction = DStates.RIGHT;
 		this.status = HStates.STAND;
+		this.velocity = new Vector2(0,0);
 	}
+	
 	public void setX(float x)
 	{
-		this.x=x;
+		super.position.x=x;
 		
 	}
 	
 	public void setY(float y)
 	{
-		this.y=y;
+		super.position.y=y;
 		
 	}
-	public float getY()
-	{
-		return y;
-	}
-	public float getX()
-	{
-		
-		return x;
-	}
+	
 	
 	
 }

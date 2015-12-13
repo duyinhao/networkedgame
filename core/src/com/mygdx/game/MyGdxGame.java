@@ -1,19 +1,23 @@
 package com.mygdx.game;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import Model.Controller;
 import Model.DStates;
+import Model.Entity;
 import Model.HStates;
 import Model.Hero;
+import Model.HeroArr;
 import Model.HeroListener;
 import Model.IDListener;
 import Model.IDResponse;
 import Model.LocalWorld;
 import Model.ServerController;
 import Model.User;
+import Model.Vector2;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -31,11 +35,15 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
+	
+	ScreenViewport viewPort ;
 	
 	LocalWorld wrl;
 	
@@ -62,12 +70,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	ServerController serverController;
 	@Override
 	public void create () {
+		
+		
 		batch = new SpriteBatch();
 		
 		
 		
 		
-		spriteSheet = new Texture(Gdx.files.internal("megamansoccer.png"));
+		spriteSheet = new Texture(Gdx.files.internal("megamansoccer1.png"));
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 42);
 		walkFrames = new TextureRegion[4];
 		
@@ -114,7 +124,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		stateTime = 0f;
 		//prepare the client for connection
 		String ipAddress = "127.0.0.1";
-		//String ipAddress = "192.168.1.5";
+		
+		
+		
+		//this is the server ip
+		//String ipAddress = "52.27.107.160";
 		int udpPort = 54555;
 		int tcpPort = 54777;
 		
@@ -122,13 +136,13 @@ public class MyGdxGame extends ApplicationAdapter {
 		 Client client = new Client();
 		 Kryo kryo = client.getKryo();
 		 
-		 kryo.register(Hero.class);
-		  kryo.register(IDResponse.class);
-		 kryo.register(DStates.class);
-		 kryo.register(HStates.class);
-		 
-
 		
+			kryo.register(DStates.class);
+			kryo.register(Entity.class);
+			kryo.register(Hero.class);
+			kryo.register(HStates.class);
+			kryo.register(IDResponse.class);
+			kryo.register(Vector2.class);
 		
 		client.start();
 		try {
@@ -151,7 +165,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		client.addListener(new HeroListener(wrl.heroArr));
 		
 		//change this to a proper request
-		client.sendTCP(new Hero(1,1));
+		client.sendTCP(new Hero(400,400));
 		System.out.println("First hero packet sent from game");
 		
 		
@@ -164,7 +178,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		int width = Integer.parseInt(tiledMap.getProperties().get("width").toString());
 		int height = Integer.parseInt(tiledMap.getProperties().get("height").toString());
-	
+		
 		
 
 		
@@ -234,33 +248,35 @@ public class MyGdxGame extends ApplicationAdapter {
 //			System.out.println(temp);
 //		}
 //		
-		
+	
 		
 		
 	}
 
 	@Override
+	
 	public void render () {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 	    stateTime = stateTime+  deltaTime;
 	    
+	    //viewPort.setScreenPosition((int)wrl.hero.getX(), (int)wrl.hero.getY());
 	    
 	    
-	    
-	    
+	   camera.position.x = wrl.hero.position.x;
+	   camera.position.y = wrl.hero.position.y;
 	   
 	    
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		camera.update();
-	    
+	   
 		tiledMapRenderer.setView(camera);
 	    tiledMapRenderer.render();
 		
 		batch.begin();
 		
-		
+		batch.setProjectionMatrix(camera.combined);
 		for(int i = 0; i < wrl.heroArr.size; i++)	
 		{	
 			
@@ -302,13 +318,17 @@ public class MyGdxGame extends ApplicationAdapter {
 				//batch.draw(img,hero.getX(),hero.getY());
 				
 			   
-				batch.draw(currentFrame, currentHero.getX(), currentHero.getY());
+				batch.draw(currentFrame, currentHero.position.x, currentHero.position.y);
 			
 			}	
 		}
 		
 		batch.end();
+		
 		userController.update(deltaTime);
+		wrl.upate(deltaTime);
+		//wrl.update(deltaTime);
+		
 		//System.out.println(stateTime);
 		
 		
