@@ -79,21 +79,44 @@ public class LocalWorld {
 		for(int i = 0; i < heroArr.size; i++)
 		{	
 			
-			hero =heroArr.arr[i];
 			
 			if(heroArr.arr[i]!=null)
 			{	
 				
+				hero =heroArr.arr[i];
 				Vector2 movementVec = new Vector2(0,0);
 				Vector2 sclVelocity = hero.velocity.scl(deltaTime);
+			//update the hero based on the rules of the game
+				//if hero lands on  the floor once jumped, he his downward velcotity should be 0
+				if( hero.status == HStates.JUMP && hero.velocity.y < 0 && actualYMovementWithCollision (hero, sclVelocity) == 0 )
+				{
+					hero.velocity.y = 0;
+					hero.status = HStates.STAND;
+					
+						
+					
+				}
+				//Gravity - make that stuff happen when you off the ground
+				
+					System.out.println("gravity");
+					System.out.println("before gravity"+hero.velocity.y);
+					hero.velocity.y = hero.velocity.y - 100.0f*deltaTime;
+					System.out.println("after gravity"+hero.velocity.y);
+					
+				
+				
+				//make the hero move what it was suppose to move
 				
 				
 				
 				
 				
-				Vector2[] v = {new Vector2(hero.position.x,hero.position.y), new Vector2(hero.position.x, hero.position.y+hero.height)};
-				hero.position.x = hero.position.x + actualXMovementWithCollision(v,sclVelocity);
-				hero.position.y = hero.position.y + actualYMovementWithCollision(v, sclVelocity);
+				
+				Vector2[] v = {new Vector2(hero.position.x,hero.position.y), new Vector2(hero.position.x, hero.position.y+hero.height),new Vector2(hero.position.x+hero.width,hero.position.y+hero.height),new Vector2(hero.position.x+hero.width,hero.position.y)};
+				//hero.position.x = hero.position.x + actualXMovementWithCollision(v,sclVelocity);
+				hero.position.x = hero.position.x + actualXMovementWithCollision(hero,sclVelocity);
+				
+				hero.position.y = hero.position.y + actualYMovementWithCollision(hero, sclVelocity);
 				
 				
 				
@@ -104,8 +127,58 @@ public class LocalWorld {
 		}
 		
 	}
-	//entity calculation
 	
+	//might be a good idea to create another module for the below methods for the collision
+//	//entity calculation
+	// i assume tiles are squares not rectangles
+	private float actualXMovementWithCollision(Entity entity, Vector2 sclVelocityVec)
+	{
+		int steps = entity.height/colSystem.tileWidth;
+		int x;
+		Vector2[] points = new Vector2[steps+2];
+		
+		if (sclVelocityVec.x>0)
+		{
+			x = (int)entity.position.x + entity.width;
+		}
+		else
+		{
+			x = (int)entity.position.x ;
+		}
+		
+		points[0] = new Vector2(x,entity.position.y);
+		points[steps+1] = new Vector2(x, entity.position.y+entity.height);
+		for(int i = 1; i < steps+1; i++ )
+		{
+			points[i] = new Vector2(x,entity.position.y + i*colSystem.tileWidth );
+			
+		}		
+		return actualXMovementWithCollision(points, sclVelocityVec);
+	}
+	private float actualYMovementWithCollision(Entity entity, Vector2 sclVelocityVec)
+	{
+		int steps = entity.width/colSystem.tileWidth;
+		int y;
+		Vector2[] points = new Vector2[steps+2];
+		
+		if (sclVelocityVec.y>0)
+		{
+			y = (int)entity.position.y + entity.height;
+		}
+		else
+		{
+			y = (int)entity.position.y ;
+		}
+		
+		points[0] = new Vector2(entity.position.x,y);
+		points[steps+1] = new Vector2(entity.position.x + entity.width,y );
+		for(int i = 1; i < steps+1; i++ )
+		{
+			points[i] = new Vector2(entity.position.x + i*colSystem.tileWidth,y );
+			
+		}		
+		return actualYMovementWithCollision(points, sclVelocityVec);
+	}
 	
 	
 	//point(s) calculation

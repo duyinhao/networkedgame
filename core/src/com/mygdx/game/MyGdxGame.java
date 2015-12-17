@@ -77,7 +77,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		
 		
-		spriteSheet = new Texture(Gdx.files.internal("megamansoccer1.png"));
+		spriteSheet = new Texture(Gdx.files.internal("megamansoccer.png"));
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 42);
 		walkFrames = new TextureRegion[4];
 		

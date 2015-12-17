@@ -46,13 +46,14 @@ public class Controller {
 			 if(wrl.hero.status != HStates.STAND)
 			 {
 				 wrl.hero.status = HStates.STAND;
+				 wrl.hero.velocity.x = 0; 
 				 client.sendUDP(wrl.hero); 
 			 }
 		 }
-		 if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+		 if(Gdx.input.isKeyPressed(Input.Keys.SPACE)&wrl.hero.status != HStates.JUMP)
 		 {
 			 wrl.hero.velocity.y = vSpeed;
-			 
+			 wrl.hero.status = HStates.JUMP;
 			 client.sendUDP(wrl.hero); 
 		 }
 		 if(Gdx.input.isKeyPressed(Input.Keys.DOWN))

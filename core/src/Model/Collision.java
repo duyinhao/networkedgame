@@ -119,6 +119,8 @@ public class Collision {
 		tileX = x/tileWidth ;
 		tileY = y/tileWidth ;
 		//System.out.println(tileX+" "+tileY);
+		
+		
 		switch(dir)
 		{
 			case UP:
@@ -126,8 +128,9 @@ public class Collision {
 				
 				
 			case DOWN:
-				//System.out.println("sdfsdf"+downColMap[16][1]);
+				
 				return downColMap[tileX][tileY]*tileWidth +(y%tileWidth);
+				
 			
 			case LEFT:
 				
