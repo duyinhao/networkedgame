@@ -97,13 +97,15 @@ public class LocalWorld {
 					
 				}
 				//Gravity - make that stuff happen when you off the ground
-				
+				//ok so gravity should only accelrate character when its off the floor
+				if( !(hero.velocity.y < 0 && actualYMovementWithCollision(hero, hero.velocity)==0))	
+				{	
 					System.out.println("gravity");
 					System.out.println("before gravity"+hero.velocity.y);
 					hero.velocity.y = hero.velocity.y - 100.0f*deltaTime;
 					System.out.println("after gravity"+hero.velocity.y);
 					
-				
+				}
 				
 				//make the hero move what it was suppose to move
 				
@@ -118,8 +120,11 @@ public class LocalWorld {
 				
 				hero.position.y = hero.position.y + actualYMovementWithCollision(hero, sclVelocity);
 				
-				
-				
+				//if hero hits his head against a wall while jumping, it should stop change velocity to 0 
+				if(hero.velocity.y > 0 && actualYMovementWithCollision(hero,sclVelocity)==0 )
+				{
+					hero.velocity.y = 0;
+				}
 				
 				
 				

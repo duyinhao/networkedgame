@@ -12,6 +12,9 @@ public DStates direction;
 public HStates status;
 public static float SPEEDPERSECOND = 5000;
 public Vector2 velocity;
+
+
+
 	public Hero()
 	{
 		super(new Vector2(0,0), 0,0);
