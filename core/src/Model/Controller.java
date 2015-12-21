@@ -20,6 +20,7 @@ public class Controller {
 	}
 	public void update(float deltaTime)
 	{
+		//horrible idea fix it
 		float hSpeed = Hero.SPEEDPERSECOND*deltaTime;
 		float vSpeed = Hero.SPEEDPERSECOND*deltaTime;
 		//System.out.println(wrl);
@@ -30,30 +31,35 @@ public class Controller {
 		 {
 			 wrl.hero.velocity.x = -1*hSpeed; 
 			 wrl.hero.direction = DStates.LEFT;
-			 wrl.hero.status = HStates.RUN;
+			 if(wrl.hero.status != HStates.JUMP)
+				 wrl.hero.status = HStates.RUN;
 			 client.sendUDP(wrl.hero); 
 		 }
 		 else if(Gdx.input.isKeyPressed(Input.Keys.D))
 		 {
 			 wrl.hero.velocity.x = hSpeed;  
 			 wrl.hero.direction = DStates.RIGHT;
-			 wrl.hero.status = HStates.RUN;
+			 if(wrl.hero.status != HStates.JUMP)
+					 wrl.hero.status = HStates.RUN;
 			 client.sendUDP(wrl.hero); 
 		 }
 		 else 
 		 {
 			
-			 if(wrl.hero.status != HStates.STAND)
+			 if(wrl.hero.status != HStates.JUMP&&wrl.hero.status != HStates.STAND)
 			 {
 				 wrl.hero.status = HStates.STAND;
 				 wrl.hero.velocity.x = 0; 
 				 client.sendUDP(wrl.hero); 
 			 }
 		 }
-		 if(Gdx.input.isKeyPressed(Input.Keys.SPACE)&wrl.hero.status != HStates.JUMP)
+		 
+		 if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
 		 {
-			 wrl.hero.velocity.y = vSpeed;
-			 wrl.hero.status = HStates.JUMP;
+			 wrl.hero.jump(deltaTime,wrl);
+			 
+			 
+			
 			 client.sendUDP(wrl.hero); 
 		 }
 		 if(Gdx.input.isKeyPressed(Input.Keys.DOWN))

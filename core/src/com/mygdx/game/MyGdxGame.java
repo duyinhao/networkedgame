@@ -1,13 +1,23 @@
 package com.mygdx.game;
 
 
+
+
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Model.BasicArmor;
+import Model.BasicCape;
+import Model.BasicShoes;
+import Model.BasicShooter;
 import Model.Controller;
 import Model.DStates;
+import Model.DoubleJumpShoes;
 import Model.Entity;
+import Model.Equipable;
 import Model.HStates;
 import Model.Hero;
 import Model.HeroArr;
@@ -26,6 +36,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
@@ -53,6 +64,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	Animation crouchAnimationR;
 	Animation standAnimationL;
 	Animation standAnimationR;
+	
+	Animation jumpAnimationR;
+	Animation jumpAnimationL;
 	
 	OrthographicCamera camera;
 	TiledMap  tiledMap;
@@ -97,7 +111,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		
 		walkAnimationL = new Animation(0.1f, walkFrames);
-		
+		walkAnimationL.setPlayMode(PlayMode.LOOP);
 		
 		walkFrames = new TextureRegion[4];
 		
@@ -111,6 +125,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		
 		walkAnimationR = new Animation(0.1f, walkFrames);
+		walkAnimationR.setPlayMode(PlayMode.LOOP);
 		
 		walkFrames = new TextureRegion[1];
 		walkFrames[0] = tmp[1][1];
@@ -120,6 +135,19 @@ public class MyGdxGame extends ApplicationAdapter {
 		walkFrames[0] = tmp[1][0];
 		standAnimationL = new Animation(0.1f, walkFrames);
 		
+		walkFrames = new TextureRegion[1];
+		walkFrames[0] = tmp[3][5];
+		//walkFrames[1] = tmp[2][5];
+		
+		jumpAnimationR = new Animation(2f, walkFrames);
+		jumpAnimationR.setPlayMode(PlayMode.NORMAL);
+		
+		walkFrames = new TextureRegion[1];
+		walkFrames[0] = tmp[3][4];
+		//walkFrames[1] = tmp[2][4];
+		
+		jumpAnimationL = new Animation(2f, walkFrames);
+		jumpAnimationL.setPlayMode(PlayMode.NORMAL);
 		
 		stateTime = 0f;
 		//prepare the client for connection
@@ -136,7 +164,13 @@ public class MyGdxGame extends ApplicationAdapter {
 		 Client client = new Client();
 		 Kryo kryo = client.getKryo();
 		 
-		
+			kryo.register(BasicArmor.class);
+			kryo.register(BasicCape.class);
+			kryo.register(BasicShoes.class);
+			kryo.register(BasicShooter.class);
+			
+			kryo.register(DoubleJumpShoes.class);
+			kryo.register(Equipable.class);
 			kryo.register(DStates.class);
 			kryo.register(Entity.class);
 			kryo.register(Hero.class);
@@ -157,7 +191,37 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
 
-		wrl = new LocalWorld(layer);
+		
+		
+		 int[][] collisionMapArr= new int[layer.getWidth()][layer.getHeight()];
+		
+		
+		
+		
+		
+		TiledMapTile tmpTile;
+		for(int x = 0; x < layer.getWidth(); x++)
+		{
+			for(int y = 0; y < layer.getHeight(); y++)
+			{
+				//System.out.println(y+" "+x);
+				tmpTile = layer.getCell(x, y).getTile();
+				//System.out.println(tmpTile.getId());
+				
+				if(!tmpTile.getProperties().containsKey("Collision")  )
+				{
+					collisionMapArr[x][y] = 0;
+				}
+				else
+				{
+					collisionMapArr[x][y] = Integer.parseInt(tmpTile.getProperties().get("Collision",String.class)) ;
+					//System.out.println("has property");
+				}
+			}
+			
+		}
+		
+		wrl = new LocalWorld(collisionMapArr,(int) layer.getTileWidth() );
 		
 		//always add the listener first before the requests otherwise wont register response
 		//pehpaps a different structure is need to avoid this annoying bug
@@ -296,6 +360,11 @@ public class MyGdxGame extends ApplicationAdapter {
 						
 						currentAnimation = standAnimationL;
 					}
+					else if(currentHero.status == HStates.JUMP)
+					{
+						currentAnimation = jumpAnimationL;
+					}
+					
 										
 				}
 				else if(currentHero.direction == DStates.RIGHT)
@@ -310,10 +379,14 @@ public class MyGdxGame extends ApplicationAdapter {
 						
 						currentAnimation = standAnimationR;
 					}
-					
+					else if(currentHero.status == HStates.JUMP)
+					{
+						currentAnimation = jumpAnimationR;
+					}
 				}
 				
-				currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+				currentFrame = currentAnimation.getKeyFrame(stateTime);
+				
 				
 				//batch.draw(img,hero.getX(),hero.getY());
 				

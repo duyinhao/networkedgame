@@ -29,43 +29,15 @@ public class LocalWorld {
 
 	public Collision colSystem;
 	
-	TiledMapTileLayer layer;
-	public LocalWorld(TiledMapTileLayer layer  )
+	
+	public LocalWorld(int[][] collisionMapArr , int tileWidth)
 	{
-		this.layer = layer;
 		
 		hero = new Hero(1,1);
 		user = new User("test");
 		heroArr = new HeroArr();
-		collisionMapArr= new int[layer.getWidth()][layer.getHeight()];
-		
-		
-		
-		
-		
-		TiledMapTile tmpTile;
-		for(int x = 0; x < layer.getWidth(); x++)
-		{
-			for(int y = 0; y < layer.getHeight(); y++)
-			{
-				//System.out.println(y+" "+x);
-				tmpTile = layer.getCell(x, y).getTile();
-				//System.out.println(tmpTile.getId());
-				
-				if(!tmpTile.getProperties().containsKey("Collision")  )
-				{
-					collisionMapArr[x][y] = 0;
-				}
-				else
-				{
-					collisionMapArr[x][y] = Integer.parseInt(tmpTile.getProperties().get("Collision",String.class)) ;
-					//System.out.println("has property");
-				}
-			}
-			
-		}
-		
-		colSystem = new Collision(collisionMapArr,(int)layer.getTileHeight());
+		this.collisionMapArr = collisionMapArr;
+		colSystem = new Collision(collisionMapArr,tileWidth);
 		  
 		 
 		
