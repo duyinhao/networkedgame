@@ -15,6 +15,7 @@ import Model.BasicShoes;
 import Model.BasicShooter;
 import Model.Controller;
 import Model.DStates;
+import Model.DashCape;
 import Model.DoubleJumpShoes;
 import Model.Entity;
 import Model.Equipable;
@@ -68,6 +69,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	Animation jumpAnimationR;
 	Animation jumpAnimationL;
 	
+	Animation flyR;
+	Animation flyL;
+	
 	OrthographicCamera camera;
 	TiledMap  tiledMap;
 	TiledMapRenderer tiledMapRenderer;
@@ -91,8 +95,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		
 		
-		spriteSheet = new Texture(Gdx.files.internal("megamansoccer.png"));
-		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 42);
+		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
+		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 41);
 		walkFrames = new TextureRegion[4];
 		
 		float w = Gdx.graphics.getWidth();
@@ -149,10 +153,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		jumpAnimationL = new Animation(2f, walkFrames);
 		jumpAnimationL.setPlayMode(PlayMode.NORMAL);
 		
+		walkFrames = new TextureRegion[1];
+		walkFrames[0] = tmp[5][5];
+		flyR = new Animation(1f,walkFrames);
+		
+		walkFrames = new TextureRegion[1];
+		walkFrames[0] = tmp[5][4];
+		flyL = new Animation(1f,walkFrames);
+		
 		stateTime = 0f;
 		//prepare the client for connection
 		String ipAddress = "127.0.0.1";
-		
+		//String ipAddress = "10.0.0.123";
 		
 		
 		//this is the server ip
@@ -168,8 +180,9 @@ public class MyGdxGame extends ApplicationAdapter {
 			kryo.register(BasicCape.class);
 			kryo.register(BasicShoes.class);
 			kryo.register(BasicShooter.class);
-			
+			kryo.register(DashCape.class);
 			kryo.register(DoubleJumpShoes.class);
+			
 			kryo.register(Equipable.class);
 			kryo.register(DStates.class);
 			kryo.register(Entity.class);
@@ -261,7 +274,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			//System.out.println(temp);
 		}
 		serverController = new ServerController(client, wrl);
-		userController = new Controller(Gdx.input, wrl, client);
+		userController = new Controller(camera,Gdx.input, wrl, client);
 		
 //		wrl.loadColMap();
 //		System.out.println("left");
@@ -364,6 +377,10 @@ public class MyGdxGame extends ApplicationAdapter {
 					{
 						currentAnimation = jumpAnimationL;
 					}
+					else if(currentHero.status == HStates.FLY)
+					{
+						currentAnimation = flyL;
+					}
 					
 										
 				}
@@ -382,6 +399,10 @@ public class MyGdxGame extends ApplicationAdapter {
 					else if(currentHero.status == HStates.JUMP)
 					{
 						currentAnimation = jumpAnimationR;
+					}
+					else if(currentHero.status == HStates.FLY)
+					{
+						currentAnimation = flyR;
 					}
 				}
 				

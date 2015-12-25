@@ -18,18 +18,21 @@ public class DoubleJumpShoes extends BasicShoes{
 		
 	}
 	@Override
-	public void jump(float deltaTime, LocalWorld wrl)
+	public void jump(float deltaTime, boolean justPressed ,LocalWorld wrl)
 	{
-		if (wrl.hero.status!=HStates.JUMP)
+		
+		if ((wrl.hero.status==HStates.RUN||wrl.hero.status==HStates.STAND)&&justPressed)
 		{
 			this.jumpCount= 0;
 			wrl.hero.velocity.y = 100;
-			wrl.hero.status = HStates.JUMP;
+			if(wrl.hero.status != HStates.FLY)
+				wrl.hero.status = HStates.JUMP;
 		}
-		else if(jumpCount < 1)
+		else if(jumpCount < 1 &&justPressed)
 		{
 			wrl.hero.velocity.y = 100;
-			wrl.hero.status = HStates.JUMP;
+			if(wrl.hero.status != HStates.FLY)
+				wrl.hero.status = HStates.JUMP;
 			this.jumpCount++;
 		}
 		

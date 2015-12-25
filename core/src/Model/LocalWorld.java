@@ -63,6 +63,8 @@ public class LocalWorld {
 				if( hero.status == HStates.JUMP && hero.velocity.y < 0 && actualYMovementWithCollision (hero, sclVelocity) == 0 )
 				{
 					hero.velocity.y = 0;
+					//friction stops the x velocity
+					hero.velocity.x = 0;
 					hero.status = HStates.STAND;
 					
 						
@@ -72,20 +74,18 @@ public class LocalWorld {
 				//ok so gravity should only accelrate character when its off the floor
 				if( !(hero.velocity.y < 0 && actualYMovementWithCollision(hero, hero.velocity)==0))	
 				{	
-					System.out.println("gravity");
-					System.out.println("before gravity"+hero.velocity.y);
+				
 					hero.velocity.y = hero.velocity.y - 100.0f*deltaTime;
-					System.out.println("after gravity"+hero.velocity.y);
+					
 					
 				}
 				
+			
+	
+				
 				//make the hero move what it was suppose to move
 				
-				
-				
-				
-				
-				
+
 				Vector2[] v = {new Vector2(hero.position.x,hero.position.y), new Vector2(hero.position.x, hero.position.y+hero.height),new Vector2(hero.position.x+hero.width,hero.position.y+hero.height),new Vector2(hero.position.x+hero.width,hero.position.y)};
 				//hero.position.x = hero.position.x + actualXMovementWithCollision(v,sclVelocity);
 				hero.position.x = hero.position.x + actualXMovementWithCollision(hero,sclVelocity);
@@ -98,7 +98,12 @@ public class LocalWorld {
 					hero.velocity.y = 0;
 				}
 				
-				
+//				if(hero.status!=HStates.RUN&&hero.velocity.y<0&&actualYMovementWithCollision(hero, hero.velocity)==0)
+//				 {
+//					hero.status = HStates.STAND;
+//					hero.velocity.x = 0; 
+//					 
+//				 }
 				
 			}
 		}
@@ -108,7 +113,7 @@ public class LocalWorld {
 	//might be a good idea to create another module for the below methods for the collision
 //	//entity calculation
 	// i assume tiles are squares not rectangles
-	private float actualXMovementWithCollision(Entity entity, Vector2 sclVelocityVec)
+	public float actualXMovementWithCollision(Entity entity, Vector2 sclVelocityVec)
 	{
 		int steps = entity.height/colSystem.tileWidth;
 		int x;
@@ -132,7 +137,7 @@ public class LocalWorld {
 		}		
 		return actualXMovementWithCollision(points, sclVelocityVec);
 	}
-	private float actualYMovementWithCollision(Entity entity, Vector2 sclVelocityVec)
+	public float actualYMovementWithCollision(Entity entity, Vector2 sclVelocityVec)
 	{
 		int steps = entity.width/colSystem.tileWidth;
 		int y;
@@ -159,7 +164,7 @@ public class LocalWorld {
 	
 	
 	//point(s) calculation
-	private float actualXMovementWithCollision(Vector2[] positionPoints, Vector2 sclVelocityVec)
+	public float actualXMovementWithCollision(Vector2[] positionPoints, Vector2 sclVelocityVec)
 	{
 		float actX = actualXMovementWithCollision(positionPoints[0],sclVelocityVec);
 		float temp;
@@ -175,7 +180,7 @@ public class LocalWorld {
 		}
 		return actX;
 	}
-	private float actualYMovementWithCollision(Vector2[] positionPoints, Vector2 sclVelocityVec)
+	public float actualYMovementWithCollision(Vector2[] positionPoints, Vector2 sclVelocityVec)
 	{
 		float actY = actualYMovementWithCollision(positionPoints[0],sclVelocityVec);
 		float temp;
@@ -192,7 +197,7 @@ public class LocalWorld {
 		return actY;
 	}
 	//point calcultation
-	private float actualXMovementWithCollision( Vector2 positionVec,Vector2 sclVelocityVec)
+	public float actualXMovementWithCollision( Vector2 positionVec,Vector2 sclVelocityVec)
 	{
 		//the distance to the wall for RIGHT and UP is subtracted by 1 so that if the character were to move by (distance - 1) they would still be on the same tile
 		//this is because by convention when a point is on a border it is considered part of the top block or the right block
@@ -210,7 +215,7 @@ public class LocalWorld {
 			return 0;
 		}
 	}
-	private float actualYMovementWithCollision(Vector2 positionVec, Vector2 sclVelocity)
+	public float actualYMovementWithCollision(Vector2 positionVec, Vector2 sclVelocity)
 	{
 
 		//the distance to the wall for RIGHT and UP is subtracted by 1 so that if the character were to move by (distance - 1) they would still be on the same tile
