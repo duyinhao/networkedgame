@@ -163,10 +163,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		stateTime = 0f;
 		//prepare the client for connection
-		String ipAddress = "127.0.0.1";
+		//String ipAddress = "127.0.0.1";
+		//String ipAddress = "197.89.20.143";
+
 		//String ipAddress = "10.0.0.123";
 		
-		
+		String ipAddress = "52.34.163.224";
 		//this is the server ip
 		//String ipAddress = "52.27.107.160";
 		int udpPort = 54555;
@@ -242,7 +244,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		client.addListener(new HeroListener(wrl.heroArr));
 		
 		//change this to a proper request
-		client.sendTCP(new Hero(400,400,40,42));
+		client.sendTCP(new Hero(100,1600,40,42));
 		System.out.println("First hero packet sent from game");
 		
 		

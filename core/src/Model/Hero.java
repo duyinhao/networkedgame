@@ -57,8 +57,8 @@ public BasicCape cape;
 		//this.shoes = new BasicShoes();
 		this.shoes = new DoubleJumpShoes();
 		this.armor = new BasicArmor();
-		//this.cape = new BasicCape();
-		this.cape = new DashCape();
+		this.cape = new BasicCape();
+		//this.cape = new DashCape();
 	}
 	
 	public void setX(float x)
