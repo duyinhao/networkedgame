@@ -5,6 +5,8 @@ package com.mygdx.game;
 
 
 
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +15,8 @@ import Model.BasicArmor;
 import Model.BasicCape;
 import Model.BasicShoes;
 import Model.BasicShooter;
+import Model.Bullet;
+import Model.Collidable;
 import Model.Controller;
 import Model.DStates;
 import Model.DashCape;
@@ -79,6 +83,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	
 	Texture spriteSheet;
+	Texture bulletSprite;
 	TextureRegion[]	walkFrames;
 	TextureRegion currentFrame;
 	Animation currentAnimation;
@@ -92,7 +97,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		batch = new SpriteBatch();
 		
-		
+		bulletSprite = new Texture(Gdx.files.internal("bullet.png"));
 		
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
@@ -163,16 +168,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		stateTime = 0f;
 		//prepare the client for connection
-		//String ipAddress = "127.0.0.1";
+		String ipAddress = "127.0.0.1";
 		//String ipAddress = "197.89.20.143";
 
 		//String ipAddress = "10.0.0.123";
 		
-		String ipAddress = "52.34.163.224";
+		//String ipAddress = "52.34.163.224";
 		//this is the server ip
 		//String ipAddress = "52.27.107.160";
-		int udpPort = 54555;
-		int tcpPort = 54777;
+		int udpPort = 5455;
+		int tcpPort = 5477;
 		
 		
 		 Client client = new Client();
@@ -182,6 +187,8 @@ public class MyGdxGame extends ApplicationAdapter {
 			kryo.register(BasicCape.class);
 			kryo.register(BasicShoes.class);
 			kryo.register(BasicShooter.class);
+			kryo.register(Bullet.class);
+			kryo.register(Collidable.class);
 			kryo.register(DashCape.class);
 			kryo.register(DoubleJumpShoes.class);
 			
@@ -416,9 +423,16 @@ public class MyGdxGame extends ApplicationAdapter {
 			   
 				batch.draw(currentFrame, currentHero.position.x, currentHero.position.y);
 				
+				
+				
+				
 			}	
 		}
-		
+		for(int j = 0 ; j < wrl.bulletArr.size(); j++)
+		{
+			Bullet bullet = wrl.bulletArr.get(j);
+			batch.draw(bulletSprite, bullet.position.x, bullet.position.y);
+		}
 		batch.end();
 		
 		userController.update(deltaTime);

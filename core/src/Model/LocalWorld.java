@@ -28,7 +28,7 @@ public class LocalWorld {
 	public int[][] collisionMapArr;
 
 	public Collision colSystem;
-	
+	public ArrayList<Bullet> bulletArr;
 	
 	public LocalWorld(int[][] collisionMapArr , int tileWidth)
 	{
@@ -39,7 +39,7 @@ public class LocalWorld {
 		this.collisionMapArr = collisionMapArr;
 		colSystem = new Collision(collisionMapArr,tileWidth);
 		  
-		 
+		bulletArr = new ArrayList<Bullet>();
 		
 		
 		
@@ -106,6 +106,11 @@ public class LocalWorld {
 //				 }
 				
 			}
+		}
+		for(int j = 0 ; j < bulletArr.size(); j++)
+		{
+			
+			bulletArr.get(j).position.add(bulletArr.get(j).velocity);
 		}
 		
 	}

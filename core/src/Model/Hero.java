@@ -16,13 +16,13 @@ public BasicShooter weapon;
 public BasicShoes shoes;
 public BasicArmor armor;
 public BasicCape cape;
-
+int health;
 
 	public Hero()
 	{
 		super(new Vector2(0,0), 0,0);
 		
-		
+		this.health = 100;
 		this.id = -1;
 		this.direction = DStates.RIGHT;
 		this.status = HStates.STAND;
@@ -31,6 +31,7 @@ public BasicCape cape;
 		this.shoes = new DoubleJumpShoes();
 		this.armor = new BasicArmor();
 		this.cape = new DashCape();
+		this.health = 100;
 	}
 	public Hero(int x , int y)
 	{
@@ -43,6 +44,7 @@ public BasicCape cape;
 		this.shoes = new DoubleJumpShoes( );
 		this.armor = new BasicArmor();
 		this.cape = new DashCape();
+		this.health = 100;
 	}
 	
 	public Hero(int x , int y, int width, int height)
@@ -59,6 +61,7 @@ public BasicCape cape;
 		this.armor = new BasicArmor();
 		this.cape = new BasicCape();
 		//this.cape = new DashCape();
+		this.health = 100;
 	}
 	
 	public void setX(float x)
