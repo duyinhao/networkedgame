@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class Collision {
 	public int[][] collisionMapArr;
 	public int[][] rightColMap;
@@ -144,5 +146,18 @@ public class Collision {
 		}
 		
 		
+	}
+	
+	public static boolean entCollide(Entity ent1, Entity ent2 )
+	{
+		if(ent1.position.x > ent2.position.x + ent2.width|| ent2.position.x > ent1.position.x + ent1.width||ent1.position.y > ent2.position.y + ent2.height||ent2.position.y > ent1.position.y + ent1.height)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+			
 	}
 }

@@ -1,20 +1,28 @@
 package Model;
 
-public class Bullet implements Collidable {
+public class Bullet extends Entity<BulletState>  {
 	
-	public int width;
-	public int height;
-	public Vector2 position;
+
 	public Vector2 velocity;
+	public Bullet()
+	{
+		super(  new Vector2(0,0), 10, 10);
+		this.velocity = new Vector2(0,0);
+	}
 	public Bullet( int x, int y, int height, int width, Vector2 velocityVec )
 	{
-		this.width = width;
-		this.height = height;
-		this.position = new Vector2(x, y) ;
+		super(  new Vector2(x,y), width, height);
+		
+		
+;
 		this.velocity = velocityVec;
 		
+		
+		
+		
 	}
-	public void collide(Object object)
+	@Override
+	public void collide(Collidable object)
 	{
 		if (object instanceof Hero)
 		{	
@@ -22,9 +30,14 @@ public class Bullet implements Collidable {
 			hero.health = hero.health - 10;
 		}
 	}
-	public void update(int deltaTime)
+	@Override
+	public void update(float deltaTime)
 	{
 		this.position.add(this.velocity.scl(deltaTime));
 	}
-
+	@Override
+	public BulletState getState()
+	{
+		return BulletState.NONE;
+	}
 }

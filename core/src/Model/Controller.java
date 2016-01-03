@@ -36,7 +36,7 @@ public class Controller {
 			wrl.hero.basicAtt1(deltaTime, (int)modelVector3.x, (int)modelVector3.y, false, wrl);
 			
 			
-			System.out.println("x: "+modelVector3.x+"\ny: "+modelVector3.y);
+			//System.out.println("x: "+modelVector3.x+"\ny: "+modelVector3.y);
 			
 			
 		}

@@ -6,8 +6,6 @@ public class BasicArmor implements Equipable{
 	{
 		
 	}
-	
-	
 	public void basicAtt1(float deltaTime,int mouseX, int mouseY,  boolean justPressed,LocalWorld wrl)
 	{
 		

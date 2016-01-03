@@ -6,23 +6,29 @@ import java.util.LinkedHashMap;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
 import Model.Entity;
+//this class basically maps animation to certain enums which represent object state
 
 public class AnimationBinding <enumType>{
-	Entity entity;
+	
+	
 	Animation[] animArray;
 	enumType st;
 	HashMap<enumType,Animation > stateAnimationMap;
-	int xOffset;
-	int yOffset;
-	public AnimationBinding(Entity entity)
+	public int xOffset;
+	public int yOffset;
+	public AnimationBinding( )
 	{
-		this.entity = entity;
+		
+		
+		stateAnimationMap= new HashMap<enumType, Animation> ();
+		
 		xOffset =0;
 		yOffset= 0;
 	}
-	public AnimationBinding(Entity entity, int xOffset, int yOffset)
+	public AnimationBinding( int xOffset, int yOffset)
 	{
-		this.entity = entity;
+		stateAnimationMap= new HashMap<enumType, Animation> ();
+	
 		this.xOffset = xOffset;
 		this.yOffset= yOffset;
 	
@@ -38,13 +44,6 @@ public class AnimationBinding <enumType>{
 		return stateAnimationMap.get(state);
 	}
 	
-	public int getX()
-	{
-		return (int)entity.position.x + xOffset;
-	}
-	public int getY()
-	{
-		return (int)entity.position.y + yOffset;
-	}
+	
 	
 }

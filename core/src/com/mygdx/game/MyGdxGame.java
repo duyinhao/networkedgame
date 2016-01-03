@@ -9,14 +9,18 @@ package com.mygdx.game;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import Model.BasicArmor;
 import Model.BasicCape;
 import Model.BasicShoes;
 import Model.BasicShooter;
 import Model.Bullet;
+import Model.BulletState;
 import Model.Collidable;
+import Model.Collision;
 import Model.Controller;
 import Model.DStates;
 import Model.DashCape;
@@ -63,6 +67,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	LocalWorld wrl;
 	
+	
+	HashMap<Class<?>, AnimationBinding> animationBinder;
+	
 	Animation walkAnimationR;
 	Animation walkAnimationL;
 	Animation crouchAnimationL;
@@ -81,7 +88,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	TiledMapRenderer tiledMapRenderer;
 	
 	
-	
+	Texture paintBrushSprite;
 	Texture spriteSheet;
 	Texture bulletSprite;
 	TextureRegion[]	walkFrames;
@@ -94,11 +101,12 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		
+		animationBinder = new HashMap<Class<?>, AnimationBinding> ();
 		
 		batch = new SpriteBatch();
 		
-		bulletSprite = new Texture(Gdx.files.internal("bullet.png"));
 		
+		paintBrushSprite = new Texture(Gdx.files.internal("paintbrush.png"));
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 41);
@@ -113,6 +121,23 @@ public class MyGdxGame extends ApplicationAdapter {
 		tiledMap = new TmxMapLoader().load("test.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		
+		
+		AnimationBinding<BulletState> bulletBinding = new AnimationBinding<BulletState>();
+		bulletSprite = new Texture(Gdx.files.internal("bullet.png"));
+
+		TextureRegion bulletRegion = new TextureRegion(bulletSprite);
+		
+		
+		Animation bulletAnimation = new Animation(0.1f, bulletRegion);
+		bulletBinding.register(BulletState.NONE, bulletAnimation);
+		
+		
+		animationBinder.put(Bullet.class, bulletBinding );
+		
+		AnimationBinding<HStateComp> heroBinding = new AnimationBinding<HStateComp>(-5,-1);
+		
+		
+		
 		walkFrames[0] = tmp[2][0];
 		walkFrames[1] = tmp[3][0];
 		walkFrames[2] = tmp[4][0];
@@ -122,11 +147,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		walkAnimationL = new Animation(0.1f, walkFrames);
 		walkAnimationL.setPlayMode(PlayMode.LOOP);
 		
+		heroBinding.register(HStateComp.RUNL, walkAnimationL);
+		
+		
 		walkFrames = new TextureRegion[4];
-		
-		
-		
-		
 		walkFrames[0] = tmp[2][1];
 		walkFrames[1] = tmp[3][1];
 		walkFrames[2] = tmp[4][1];
@@ -135,36 +159,47 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		walkAnimationR = new Animation(0.1f, walkFrames);
 		walkAnimationR.setPlayMode(PlayMode.LOOP);
+		heroBinding.register(HStateComp.RUNR, walkAnimationR);
 		
 		walkFrames = new TextureRegion[1];
 		walkFrames[0] = tmp[1][1];
 		standAnimationR = new Animation(0.1f, walkFrames);
+		heroBinding.register(HStateComp.STANDR, standAnimationR);
 		
 		walkFrames = new TextureRegion[1];
 		walkFrames[0] = tmp[1][0];
 		standAnimationL = new Animation(0.1f, walkFrames);
+		heroBinding.register(HStateComp.STANDL, standAnimationL);
 		
 		walkFrames = new TextureRegion[1];
 		walkFrames[0] = tmp[3][5];
 		//walkFrames[1] = tmp[2][5];
 		
+		
 		jumpAnimationR = new Animation(2f, walkFrames);
 		jumpAnimationR.setPlayMode(PlayMode.NORMAL);
+		heroBinding.register(HStateComp.JUMPR, jumpAnimationR);
 		
 		walkFrames = new TextureRegion[1];
 		walkFrames[0] = tmp[3][4];
+		animationBinder.put(Hero.class, heroBinding );
 		//walkFrames[1] = tmp[2][4];
 		
 		jumpAnimationL = new Animation(2f, walkFrames);
 		jumpAnimationL.setPlayMode(PlayMode.NORMAL);
+		heroBinding.register(HStateComp.JUMPL, jumpAnimationL);
 		
 		walkFrames = new TextureRegion[1];
 		walkFrames[0] = tmp[5][5];
 		flyR = new Animation(1f,walkFrames);
+		heroBinding.register(HStateComp.FLYR, flyR);
 		
 		walkFrames = new TextureRegion[1];
 		walkFrames[0] = tmp[5][4];
 		flyL = new Animation(1f,walkFrames);
+		heroBinding.register(HStateComp.FLYL, flyL);
+		
+		
 		
 		stateTime = 0f;
 		//prepare the client for connection
@@ -176,8 +211,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		//String ipAddress = "52.34.163.224";
 		//this is the server ip
 		//String ipAddress = "52.27.107.160";
-		int udpPort = 5455;
-		int tcpPort = 5477;
+		int udpPort = 54555;
+		int tcpPort = 54777;
 		
 		
 		 Client client = new Client();
@@ -212,7 +247,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 	
 		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-
+		
 		
 		
 		 int[][] collisionMapArr= new int[layer.getWidth()][layer.getHeight()];
@@ -248,15 +283,15 @@ public class MyGdxGame extends ApplicationAdapter {
 		//always add the listener first before the requests otherwise wont register response
 		//pehpaps a different structure is need to avoid this annoying bug
 		client.addListener(new IDListener(wrl.user));
-		client.addListener(new HeroListener(wrl.heroArr));
+		client.addListener(new HeroListener(wrl.heroArr, wrl.entityArr));
 		
 		//change this to a proper request
-		client.sendTCP(new Hero(100,1600,40,42));
+		client.sendTCP(new Hero(100,1600,20,35));
 		System.out.println("First hero packet sent from game");
 		
 		
 		
-		
+	
 		
 		
 		
@@ -336,7 +371,6 @@ public class MyGdxGame extends ApplicationAdapter {
 //		
 	
 		
-		
 	}
 
 	@Override
@@ -345,7 +379,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 	    stateTime = stateTime+  deltaTime;
 	    
-	    //viewPort.setScreenPosition((int)wrl.hero.getX(), (int)wrl.hero.getY());
 	    
 	    
 	   camera.position.x = wrl.hero.position.x;
@@ -363,76 +396,43 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 		
 		batch.setProjectionMatrix(camera.combined);
-		for(int i = 0; i < wrl.heroArr.size; i++)	
-		{	
-			
-			Hero currentHero = wrl.heroArr.arr[i];
-			if( wrl.heroArr.arr[i]!= null)
-			{
-				
-				if(currentHero.direction == DStates.LEFT)
-				{
-					if(currentHero.status == HStates.RUN)
-					{
-						currentAnimation = walkAnimationL;
-						
-					}
-					else if(currentHero.status == HStates.STAND)
-					{
-						
-						currentAnimation = standAnimationL;
-					}
-					else if(currentHero.status == HStates.JUMP)
-					{
-						currentAnimation = jumpAnimationL;
-					}
-					else if(currentHero.status == HStates.FLY)
-					{
-						currentAnimation = flyL;
-					}
-					
-										
-				}
-				else if(currentHero.direction == DStates.RIGHT)
-				{
-					if(currentHero.status == HStates.RUN)
-					{
-						currentAnimation = walkAnimationR;
-						
-					}
-					else if(currentHero.status == HStates.STAND)
-					{
-						
-						currentAnimation = standAnimationR;
-					}
-					else if(currentHero.status == HStates.JUMP)
-					{
-						currentAnimation = jumpAnimationR;
-					}
-					else if(currentHero.status == HStates.FLY)
-					{
-						currentAnimation = flyR;
-					}
-				}
-				
-				currentFrame = currentAnimation.getKeyFrame(stateTime);
-				
-				
-				//batch.draw(img,hero.getX(),hero.getY());
-				
-			   
-				batch.draw(currentFrame, currentHero.position.x, currentHero.position.y);
-				
-				
-				
-				
-			}	
-		}
-		for(int j = 0 ; j < wrl.bulletArr.size(); j++)
+//		for(int i = 0; i < wrl.heroArr.size; i++)	
+//		{	
+//			
+//			Hero currentHero = wrl.heroArr.arr[i];
+//			
+//			
+//			
+//			if( wrl.heroArr.arr[i]!= null)
+//			{
+//				
+//				AnimationBinding currentAnimationBinding = animationBinder.get(currentHero.getClass());
+//				currentAnimation = currentAnimationBinding.returnAnimation(currentHero.getState());
+//				currentFrame = currentAnimation.getKeyFrame(stateTime);	
+//				
+//				batch.draw(currentFrame, currentAnimationBinding.xOffset + currentHero.position.x, currentAnimationBinding.yOffset +currentHero.position.y);
+//				
+//				
+//				
+//				
+//			}	
+//		}
+		for(int j = 0 ; j < wrl.entityArr.size(); j++)
 		{
-			Bullet bullet = wrl.bulletArr.get(j);
-			batch.draw(bulletSprite, bullet.position.x, bullet.position.y);
+			Entity entity = wrl.entityArr.get(j);
+			AnimationBinding currentAnimationBinding = animationBinder.get(entity.getClass());
+			currentAnimation = currentAnimationBinding.returnAnimation(entity.getState());
+			currentFrame = currentAnimation.getKeyFrame(stateTime);	
+			
+			batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+			
+			
+			
+			
+			//batch.draw(bulletSprite, entity.position.x, entity.position.y);
 		}
+		//batch.draw(paintBrushSprite, wrl.hero.position.x+(wrl.hero.width/2)-paintBrushSprite.getWidth()/2, wrl.hero.position.y, 0f, 0f, (float)paintBrushSprite.getWidth(),  (float)paintBrushSprite.getHeight(), 1f, 1f, 0f, 0, 0,  paintBrushSprite.getWidth(), paintBrushSprite.getHeight(), false, false);
+		
 		batch.end();
 		
 		userController.update(deltaTime);

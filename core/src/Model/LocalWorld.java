@@ -28,7 +28,9 @@ public class LocalWorld {
 	public int[][] collisionMapArr;
 
 	public Collision colSystem;
-	public ArrayList<Bullet> bulletArr;
+	//public ArrayList<Bullet> bulletArr;
+	
+	public ArrayList<Entity> entityArr;
 	
 	public LocalWorld(int[][] collisionMapArr , int tileWidth)
 	{
@@ -39,7 +41,7 @@ public class LocalWorld {
 		this.collisionMapArr = collisionMapArr;
 		colSystem = new Collision(collisionMapArr,tileWidth);
 		  
-		bulletArr = new ArrayList<Bullet>();
+		entityArr = new ArrayList<Entity>();
 		
 		
 		
@@ -88,9 +90,14 @@ public class LocalWorld {
 
 				Vector2[] v = {new Vector2(hero.position.x,hero.position.y), new Vector2(hero.position.x, hero.position.y+hero.height),new Vector2(hero.position.x+hero.width,hero.position.y+hero.height),new Vector2(hero.position.x+hero.width,hero.position.y)};
 				//hero.position.x = hero.position.x + actualXMovementWithCollision(v,sclVelocity);
+
 				hero.position.x = hero.position.x + actualXMovementWithCollision(hero,sclVelocity);
 				
 				hero.position.y = hero.position.y + actualYMovementWithCollision(hero, sclVelocity);
+				
+			//	hero.velocity.x = actualXMovementWithCollision(hero,sclVelocity);
+		//		hero.velocity.y = actualYMovementWithCollision(hero, sclVelocity);
+				
 				
 				//if hero hits his head against a wall while jumping, it should stop change velocity to 0 
 				if(hero.velocity.y > 0 && actualYMovementWithCollision(hero,sclVelocity)==0 )
@@ -107,10 +114,10 @@ public class LocalWorld {
 				
 			}
 		}
-		for(int j = 0 ; j < bulletArr.size(); j++)
+		for(int j = 0 ; j < entityArr.size(); j++)
 		{
 			
-			bulletArr.get(j).position.add(bulletArr.get(j).velocity);
+			entityArr.get(j).update(deltaTime);
 		}
 		
 	}

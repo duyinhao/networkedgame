@@ -1,11 +1,14 @@
 package Model;
 
+import com.mygdx.game.HStateComp;
+import com.mygdx.game.HeroStateComposition;
 
 
 
 
 
-public class Hero extends Entity {
+
+public class Hero extends Entity <HStateComp>{
 
 public int id;
 public DStates direction;
@@ -118,6 +121,17 @@ int health;
 		cape.damage(deltaTime, damage,justPressed,wrl);
 		shoes.damage(deltaTime, damage,justPressed,wrl);
 		armor.damage(deltaTime, damage,justPressed,wrl);
+	}
+	@Override
+	public void update(float deltaTime)
+	{
+		//this.position.add(this.velocity.scl(deltaTime));
+		//this.position.add(this.velocity.scl(1f));
+	}
+	@Override
+	public HStateComp getState()
+	{
+		return HeroStateComposition.get(this.direction, this.status);
 	}
 	
 	

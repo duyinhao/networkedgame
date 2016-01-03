@@ -1,8 +1,8 @@
 package Model;
 
 public interface Collidable {
-	public void collide(Object object);
-	public void update(int deltaTime);
+	public void collide(Collidable object);
+	public void update(float deltaTime);
 	
 	
 }
