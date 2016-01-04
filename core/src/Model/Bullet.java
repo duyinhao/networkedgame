@@ -28,7 +28,7 @@ public class Bullet extends Entity<BulletState>  {
 		{	
 			Hero hero = (Hero)object;
 			//hero.health = hero.health - 10;
-			hero.velocity.y = 20;
+			hero.velocity.y = 100;
 			//System.out.println("hit");
 		}
 	}
