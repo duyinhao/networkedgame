@@ -34,6 +34,7 @@ import Model.HeroListener;
 import Model.IDListener;
 import Model.IDResponse;
 import Model.LocalWorld;
+import Model.Quadtree;
 import Model.ServerController;
 import Model.User;
 import Model.Vector2;
@@ -249,6 +250,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
 		
 		
+		 
 		
 		 int[][] collisionMapArr= new int[layer.getWidth()][layer.getHeight()];
 		

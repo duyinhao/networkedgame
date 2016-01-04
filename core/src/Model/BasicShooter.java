@@ -13,6 +13,8 @@ public class BasicShooter implements Equipable {
 		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
 		bulletVelocity = bulletVelocity.scl(100/bulletVelocity.magnitude());
 		
+		bulletVelocity = new Vector2(0,0);
+		
 		wrl.entityArr.add(new Bullet( (int)(hero.position.x ),(int)(hero.position.y),54,54,bulletVelocity));
 		
 	}

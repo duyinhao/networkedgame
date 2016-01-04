@@ -9,6 +9,7 @@ public class Collision {
 	public int[][] upColMap;
 	public int[][] downColMap;
 	int tileWidth;
+	
 	public Collision(int[][] map, int tileWidth)
 	{
 		
@@ -16,6 +17,8 @@ public class Collision {
 		
 		int w =collisionMapArr.length;
 		int h = collisionMapArr[0].length;
+		
+		
 		
 		  rightColMap = new int[w][h];
 		  leftColMap = new int[w][h];

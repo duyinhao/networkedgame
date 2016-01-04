@@ -8,6 +8,8 @@ package Model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -24,7 +26,7 @@ public class LocalWorld {
 	public User user;
 	public Hero hero;
 	public HeroArr heroArr;
-
+	Quadtree colTree;
 	public int[][] collisionMapArr;
 
 	public Collision colSystem;
@@ -43,12 +45,21 @@ public class LocalWorld {
 		  
 		entityArr = new ArrayList<Entity>();
 		
+		int w = collisionMapArr.length;
+		int h = collisionMapArr[0].length;
+		
+		colTree = new Quadtree( new Vector2(0,0) , new Vector2(w*tileWidth,h*tileWidth)  , 0 );
+		
 		
 		
 		
 	}
 	public void upate(float deltaTime)
 	{
+		
+		
+		
+		
 		Hero hero;
 		for(int i = 0; i < heroArr.size; i++)
 		{	
@@ -114,11 +125,40 @@ public class LocalWorld {
 				
 			}
 		}
+		colTree.clear();
 		for(int j = 0 ; j < entityArr.size(); j++)
 		{
 			
 			entityArr.get(j).update(deltaTime);
+			
+			//insert objects into quadtree
+			colTree.insert(entityArr.get(j));
+			
+			
 		}
+		
+		ArrayList<Entity> returnObjects = new ArrayList<Entity>() ;
+		returnObjects = colTree.retrieve(returnObjects, this.hero);
+		
+		for(int i = 0 ; i < returnObjects.size(); i ++)
+		{
+			for(int j = 0; j < returnObjects.size(); j++)
+			{
+				if(i!=j)
+				{
+					if(Quadtree.isCollide(returnObjects.get(j), returnObjects.get(i)))
+						returnObjects.get(j).collide(returnObjects.get(i));
+				}
+			}
+		}
+		
+		
+		
+		
+		//System.out.println(returnObjects.size());
+		
+		
+		
 		
 	}
 	

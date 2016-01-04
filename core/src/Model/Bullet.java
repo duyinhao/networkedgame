@@ -27,7 +27,9 @@ public class Bullet extends Entity<BulletState>  {
 		if (object instanceof Hero)
 		{	
 			Hero hero = (Hero)object;
-			hero.health = hero.health - 10;
+			//hero.health = hero.health - 10;
+			hero.velocity.y = 20;
+			//System.out.println("hit");
 		}
 	}
 	@Override
