@@ -1,4 +1,7 @@
-package Model;
+package Controller;
+
+import Model.IDResponse;
+import Model.User;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;

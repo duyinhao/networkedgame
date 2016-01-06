@@ -6,17 +6,10 @@ package Model;
 
 
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
+import Controller.EntListener;
 
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 
 public class LocalWorld {
 	
@@ -33,9 +26,12 @@ public class LocalWorld {
 	//public ArrayList<Bullet> bulletArr;
 	
 	public ArrayList<Entity> entityArr;
+	public EntListener entLis;
 	
-	public LocalWorld(int[][] collisionMapArr , int tileWidth)
+	//remove that client once you have the legit network layer
+	public LocalWorld(int[][] collisionMapArr , int tileWidth , Client client)
 	{
+		
 		
 		hero = new Hero(1,1);
 		user = new User("test");
@@ -50,7 +46,7 @@ public class LocalWorld {
 		
 		colTree = new Quadtree( new Vector2(0,0) , new Vector2(w*tileWidth,h*tileWidth)  , 0 );
 		
-		
+		entLis = new EntListener( entityArr ,client);
 		
 		
 	}
@@ -136,23 +132,34 @@ public class LocalWorld {
 			
 			
 		}
-		
-		ArrayList<Entity> returnObjects = new ArrayList<Entity>() ;
-		returnObjects = colTree.retrieve(returnObjects, this.hero);
-		
-		for(int i = 0 ; i < returnObjects.size(); i ++)
+		for(int k = 0; k < heroArr.size; k++)
 		{
-			for(int j = 0; j < returnObjects.size(); j++)
-			{
-				if(i!=j)
+			if(heroArr.arr[k]!=null)
+			{	
+				ArrayList<Entity> returnObjects = new ArrayList<Entity>() ;
+				returnObjects = colTree.retrieve(returnObjects, heroArr.arr[k]);
+		
+				for(int i = 0 ; i < returnObjects.size(); i ++)
 				{
-					if(Quadtree.isCollide(returnObjects.get(j), returnObjects.get(i)))
-						returnObjects.get(j).collide(returnObjects.get(i));
+					for(int j = 0; j < returnObjects.size(); j++)
+					{
+						if(i!=j)
+						{
+						if(Quadtree.isCollide(returnObjects.get(j), returnObjects.get(i)))
+							returnObjects.get(j).collide(returnObjects.get(i));
+						}
+					}
 				}
 			}
 		}
-		
-		
+		for(int i = 0; i < entityArr.size(); i++)
+		{
+			if(entityArr.get(i).destroyed)
+			{
+				entityArr.remove(i);
+				i--;
+			}
+		}
 		
 		
 		//System.out.println(returnObjects.size());

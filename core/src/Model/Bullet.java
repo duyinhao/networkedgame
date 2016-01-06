@@ -29,7 +29,10 @@ public class Bullet extends Entity<BulletState>  {
 			Hero hero = (Hero)object;
 			//hero.health = hero.health - 10;
 			hero.velocity.y = 100;
+			this.destroyed = true;
+			//hero.health = hero.health -1;
 			//System.out.println("hit");
+			hero.status=HStates.RUN;
 		}
 	}
 	@Override

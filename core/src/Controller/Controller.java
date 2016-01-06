@@ -1,5 +1,10 @@
-package Model;
+package Controller;
 
+
+import Model.DStates;
+import Model.HStates;
+import Model.Hero;
+import Model.LocalWorld;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -29,17 +34,12 @@ public class Controller {
 		{
 			int screenX = Gdx.input.getX();
 			int screenY = Gdx.input.getY();
-			
-			//we want to get the xy in the model not screen to use.
 			Vector3 modelVector3= camera.unproject(new Vector3( screenX,screenY,0));
-			
-			wrl.hero.basicAtt1(deltaTime, (int)modelVector3.x, (int)modelVector3.y, false, wrl);
-			
-			
-			//System.out.println("x: "+modelVector3.x+"\ny: "+modelVector3.y);
-			
-			
+		
+			wrl.hero.basicAtt1(0, (int)modelVector3.x, (int)modelVector3.y, false, wrl);
+		
 		}
+		
 		if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT))
 		{
 			int screenX = Gdx.input.getX();
@@ -52,8 +52,8 @@ public class Controller {
 		}
 		
 		//horrible idea fix it
-		float hSpeed = Hero.SPEEDPERSECOND*deltaTime;
-		float vSpeed = Hero.SPEEDPERSECOND*deltaTime;
+		float hSpeed = Hero.SPEEDPERSECOND;
+		float vSpeed = Hero.SPEEDPERSECOND;
 		//System.out.println(wrl);
 		if(wrl.user.heroID != -1)
 		{

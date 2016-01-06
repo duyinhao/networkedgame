@@ -1,6 +1,8 @@
-package Model;
+package Controller;
 
 import java.io.IOException;
+
+import Model.LocalWorld;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;

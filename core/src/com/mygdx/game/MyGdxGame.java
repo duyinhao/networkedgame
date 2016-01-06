@@ -13,6 +13,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import Controller.Controller;
+import Controller.EntListener;
+import Controller.HeroListener;
+import Controller.IDListener;
+import Controller.ServerController;
+import Controller.inputController;
+import Model.AEPaintBullet;
 import Model.BasicArmor;
 import Model.BasicCape;
 import Model.BasicShoes;
@@ -21,7 +28,6 @@ import Model.Bullet;
 import Model.BulletState;
 import Model.Collidable;
 import Model.Collision;
-import Model.Controller;
 import Model.DStates;
 import Model.DashCape;
 import Model.DoubleJumpShoes;
@@ -30,12 +36,9 @@ import Model.Equipable;
 import Model.HStates;
 import Model.Hero;
 import Model.HeroArr;
-import Model.HeroListener;
-import Model.IDListener;
 import Model.IDResponse;
 import Model.LocalWorld;
 import Model.Quadtree;
-import Model.ServerController;
 import Model.User;
 import Model.Vector2;
 
@@ -61,14 +64,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 
-public class MyGdxGame extends ApplicationAdapter {
+public class MyGdxGame extends ApplicationAdapter{
 	SpriteBatch batch;
 	
 	ScreenViewport viewPort ;
 	
 	LocalWorld wrl;
 	
-	
+	EntListener entLis;
 	HashMap<Class<?>, AnimationBinding> animationBinder;
 	
 	Animation walkAnimationR;
@@ -90,8 +93,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	
 	
 	Texture paintBrushSprite;
+	Texture healthBar;
 	Texture spriteSheet;
 	Texture bulletSprite;
+	Texture cBulletSprite;
 	TextureRegion[]	walkFrames;
 	TextureRegion currentFrame;
 	Animation currentAnimation;
@@ -110,6 +115,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		paintBrushSprite = new Texture(Gdx.files.internal("paintbrush.png"));
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
+		healthBar = new Texture(Gdx.files.internal("healthBar.png"));
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 41);
 		walkFrames = new TextureRegion[4];
 		
@@ -124,16 +130,29 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		
 		AnimationBinding<BulletState> bulletBinding = new AnimationBinding<BulletState>();
-		bulletSprite = new Texture(Gdx.files.internal("bullet.png"));
+		cBulletSprite = new Texture(Gdx.files.internal("cloudBullet.png"));
 
-		TextureRegion bulletRegion = new TextureRegion(bulletSprite);
+		TextureRegion bulletRegion = new TextureRegion(cBulletSprite);
 		
 		
-		Animation bulletAnimation = new Animation(0.1f, bulletRegion);
-		bulletBinding.register(BulletState.NONE, bulletAnimation);
+		Animation cbulletAnimation = new Animation(0.1f, bulletRegion);
+		bulletBinding.register(BulletState.NONE, cbulletAnimation);
 		
 		
 		animationBinder.put(Bullet.class, bulletBinding );
+		
+		
+		AnimationBinding<BulletState> aEBulletBinding = new AnimationBinding<BulletState>();
+		bulletSprite = new Texture(Gdx.files.internal("bullet1.png"));
+
+		TextureRegion aEbulletRegion = new TextureRegion(bulletSprite);
+		
+		
+		Animation aEbulletAnimation = new Animation(0.1f, aEbulletRegion);
+		aEBulletBinding.register(BulletState.NONE, aEbulletAnimation);
+		
+		
+		animationBinder.put(AEPaintBullet.class, aEBulletBinding );
 		
 		AnimationBinding<HStateComp> heroBinding = new AnimationBinding<HStateComp>(-5,-1);
 		
@@ -204,12 +223,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		stateTime = 0f;
 		//prepare the client for connection
-		String ipAddress = "127.0.0.1";
+		//String ipAddress = "127.0.0.1";
 		//String ipAddress = "197.89.20.143";
 
 		//String ipAddress = "10.0.0.123";
 		
-		//String ipAddress = "52.34.163.224";
+		String ipAddress = "52.34.163.224";
 		//this is the server ip
 		//String ipAddress = "52.27.107.160";
 		int udpPort = 54555;
@@ -218,7 +237,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		 Client client = new Client();
 		 Kryo kryo = client.getKryo();
-		 
+		 	
+		 	kryo.register(AEPaintBullet.class);
 			kryo.register(BasicArmor.class);
 			kryo.register(BasicCape.class);
 			kryo.register(BasicShoes.class);
@@ -279,8 +299,11 @@ public class MyGdxGame extends ApplicationAdapter {
 			}
 			
 		}
-		
-		wrl = new LocalWorld(collisionMapArr,(int) layer.getTileWidth() );
+		if(client == null)
+		{
+			System.out.println("fudge");
+		}
+		wrl = new LocalWorld(collisionMapArr,(int) layer.getTileWidth() ,client );
 		
 		//always add the listener first before the requests otherwise wont register response
 		//pehpaps a different structure is need to avoid this annoying bug
@@ -322,6 +345,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		serverController = new ServerController(client, wrl);
 		userController = new Controller(camera,Gdx.input, wrl, client);
 		
+		Gdx.input.setInputProcessor(new inputController(camera, wrl, client));
+		entLis = new EntListener(wrl.entityArr  , client);
 //		wrl.loadColMap();
 //		System.out.println("left");
 //		temp="";
@@ -423,17 +448,27 @@ public class MyGdxGame extends ApplicationAdapter {
 		{
 			Entity entity = wrl.entityArr.get(j);
 			AnimationBinding currentAnimationBinding = animationBinder.get(entity.getClass());
+			
+			
+			
 			currentAnimation = currentAnimationBinding.returnAnimation(entity.getState());
 			currentFrame = currentAnimation.getKeyFrame(stateTime);	
 			
 			batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
 			
+			if(entity instanceof Hero)
+			{
+				Hero curHero = (Hero)entity;
+				batch.draw(healthBar, curHero.position.x -30, curHero.position.y + curHero.height+10, 100f*(curHero.health/100f) , 20f);
+				
 			
-			
+			}
 			
 			//batch.draw(bulletSprite, entity.position.x, entity.position.y);
 		}
 		//batch.draw(paintBrushSprite, wrl.hero.position.x+(wrl.hero.width/2)-paintBrushSprite.getWidth()/2, wrl.hero.position.y, 0f, 0f, (float)paintBrushSprite.getWidth(),  (float)paintBrushSprite.getHeight(), 1f, 1f, 0f, 0, 0,  paintBrushSprite.getWidth(), paintBrushSprite.getHeight(), false, false);
+		
+		
 		
 		batch.end();
 		

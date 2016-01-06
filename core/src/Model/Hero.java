@@ -13,13 +13,13 @@ public class Hero extends Entity <HStateComp>{
 public int id;
 public DStates direction;
 public HStates status;
-public static float SPEEDPERSECOND = 5000;
+public static float SPEEDPERSECOND = 70;
 public Vector2 velocity;
 public BasicShooter weapon;
 public BasicShoes shoes;
 public BasicArmor armor;
 public BasicCape cape;
-int health;
+public int health;
 
 	public Hero()
 	{
@@ -132,6 +132,21 @@ int health;
 	public HStateComp getState()
 	{
 		return HeroStateComposition.get(this.direction, this.status);
+	}
+	public void copy(Hero hero)
+	{
+		this.armor = hero.armor;
+		this.cape = hero.cape;
+		this.direction = hero.direction;
+		this.health = hero.health;
+		this.height = hero.height;
+		this.id = hero.id;
+		this.position = hero.position;
+		this.shoes = hero.shoes;
+		this.status = hero.status;
+		this.velocity = hero.velocity;
+		this.weapon = hero.weapon;
+		this.width = hero.width;
 	}
 	
 	

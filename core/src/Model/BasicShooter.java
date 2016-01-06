@@ -13,13 +13,27 @@ public class BasicShooter implements Equipable {
 		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
 		bulletVelocity = bulletVelocity.scl(100/bulletVelocity.magnitude());
 		
-		bulletVelocity = new Vector2(0,0);
 		
-		wrl.entityArr.add(new Bullet( (int)(hero.position.x ),(int)(hero.position.y),54,54,bulletVelocity));
+		
+		Vector2 relativeStartingPoint = bulletVelocity;
+		Vector2 charMidpoint = new Vector2(hero.position.x + hero.width/2,hero.position.y+hero.height/2);
+		
+		//this code is shit because of void add, rename
+		charMidpoint.add(relativeStartingPoint.scl(0.7f));
+		
+		bulletVelocity = new Vector2(0,0);
+		wrl.entLis.add(new Bullet( (int)(charMidpoint.x )-27,(int)(charMidpoint.y)-27,54,54,bulletVelocity));
 		
 	}
 	public void basicAtt2(float deltaTime,int mouseX, int mouseY, boolean justPressed,LocalWorld wrl)
 	{
+		Hero hero = wrl.hero;
+		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
+		bulletVelocity = bulletVelocity.scl(100/bulletVelocity.magnitude());
+		
+		bulletVelocity = new Vector2(0,0);
+		
+		wrl.entLis.add(new AEPaintBullet( (int)(mouseX -27 ),(int)(mouseY-27),54,54,bulletVelocity));
 		
 	}
 	public void jump(float deltaTime,boolean justPressed, LocalWorld wrl)

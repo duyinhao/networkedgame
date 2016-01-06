@@ -1,6 +1,10 @@
-package Model;
+package Controller;
 
 import java.util.ArrayList;
+
+import Model.Entity;
+import Model.Hero;
+import Model.HeroArr;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -13,6 +17,7 @@ public class HeroListener extends Listener {
 		super();
 		this.heroArr = heroArr;
 		this.entityArr = entityArr;
+	
 		
 		
 	}
@@ -32,10 +37,13 @@ public class HeroListener extends Listener {
 			if(this.heroArr.arr[hero.id]==null)
 			{
 				entityArr.add(hero);
+				this.heroArr.arr[hero.id] = hero;
+				this.entityArr.add(this.heroArr.arr[hero.id]);
 
 			}
-			this.heroArr.arr[hero.id] = hero;
-				
+			
+			//this.heroArr.arr[hero.id] = hero;
+			this.heroArr.arr[hero.id].copy(hero); 
 			
 			if(hero.id >= this.heroArr.size)
 			{
@@ -45,6 +53,12 @@ public class HeroListener extends Listener {
 
 
 		}
+		else if(object instanceof Entity)
+		{
+			entityArr.add((Entity)object);
+			System.out.println("received bullets");
+		}
+		
 		
 	}
 
