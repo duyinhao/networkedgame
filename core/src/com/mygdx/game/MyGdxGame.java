@@ -59,6 +59,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryo.Kryo;
@@ -97,6 +98,19 @@ public class MyGdxGame extends ApplicationAdapter{
 	Texture spriteSheet;
 	Texture bulletSprite;
 	Texture cBulletSprite;
+	Texture boneSprite;
+	Texture foreArmSprite;
+	Texture armSprite;
+	Texture bodySprite;
+	Texture legSprite;
+	Texture bootSprite;
+	Texture headSprite;
+	
+	
+	
+	Bone testBone;
+	Bone testBone1;
+	
 	TextureRegion[]	walkFrames;
 	TextureRegion currentFrame;
 	Animation currentAnimation;
@@ -104,6 +118,9 @@ public class MyGdxGame extends ApplicationAdapter{
 	
 	Controller userController ;
 	ServerController serverController;
+	
+	HeroSkeleton heroSkeleton;
+	HeroDanceSkeleton heroDanceSkeleton;
 	@Override
 	public void create () {
 		
@@ -112,10 +129,27 @@ public class MyGdxGame extends ApplicationAdapter{
 		batch = new SpriteBatch();
 		
 		
-		paintBrushSprite = new Texture(Gdx.files.internal("paintbrush.png"));
+		paintBrushSprite = new Texture(Gdx.files.internal("paintbrush1.png"));
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
 		healthBar = new Texture(Gdx.files.internal("healthBar.png"));
+		boneSprite = new Texture(Gdx.files.internal("bone.png"));
+		
+		testBone = new Bone(400f, 1500f  , boneSprite.getWidth(), 0);
+		testBone1 = new Bone(testBone,boneSprite.getWidth(),0);
+		
+		foreArmSprite = new Texture(Gdx.files.internal("foreArm.png") );
+		armSprite= new Texture(Gdx.files.internal("arm.png") );
+		bodySprite= new Texture(Gdx.files.internal("body.png") );
+		legSprite= new Texture(Gdx.files.internal("leg.png") );
+		bootSprite= new Texture(Gdx.files.internal("boot.png") );
+		headSprite = new Texture(Gdx.files.internal("head.png") );
+		testBone.rotateLigamentAntiClockWise(30);
+		
+		heroSkeleton = new  HeroSkeleton(100, 1500 ,220, 200,220, 190, 200, 170 );
+		heroDanceSkeleton = new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
+		//heroSkeleton = new  HeroSkeleton(100, 1500 ,5, 10,4, 4, 4, 4 );
+		
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 41);
 		walkFrames = new TextureRegion[4];
 		
@@ -137,6 +171,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		Animation cbulletAnimation = new Animation(0.1f, bulletRegion);
 		bulletBinding.register(BulletState.NONE, cbulletAnimation);
+		
 		
 		
 		animationBinder.put(Bullet.class, bulletBinding );
@@ -224,13 +259,10 @@ public class MyGdxGame extends ApplicationAdapter{
 		stateTime = 0f;
 		//prepare the client for connection
 		//String ipAddress = "127.0.0.1";
-		//String ipAddress = "197.89.20.143";
-
-		//String ipAddress = "10.0.0.123";
+	
 		
-		String ipAddress = "52.34.163.224";
-		//this is the server ip
-		//String ipAddress = "52.27.107.160";
+		String ipAddress = "52.35.85.68";
+	
 		int udpPort = 54555;
 		int tcpPort = 54777;
 		
@@ -407,6 +439,8 @@ public class MyGdxGame extends ApplicationAdapter{
 	    stateTime = stateTime+  deltaTime;
 	    
 	    
+	    heroSkeleton.update(deltaTime);
+	    heroDanceSkeleton.update(deltaTime);
 	    
 	   camera.position.x = wrl.hero.position.x;
 	   camera.position.y = wrl.hero.position.y;
@@ -466,9 +500,90 @@ public class MyGdxGame extends ApplicationAdapter{
 			
 			//batch.draw(bulletSprite, entity.position.x, entity.position.y);
 		}
-		//batch.draw(paintBrushSprite, wrl.hero.position.x+(wrl.hero.width/2)-paintBrushSprite.getWidth()/2, wrl.hero.position.y, 0f, 0f, (float)paintBrushSprite.getWidth(),  (float)paintBrushSprite.getHeight(), 1f, 1f, 0f, 0, 0,  paintBrushSprite.getWidth(), paintBrushSprite.getHeight(), false, false);
+		
+		//batch.draw(, wrl.hero.position.x+(wrl.hero.width/2)-paintBrushSprite.getWidth()/2, wrl.hero.position.y, 0f, 0f, (float)paintBrushSprite.getWidth(),  (float)paintBrushSprite.getHeight(), 1f, 1f, 0f, 0, 0,  paintBrushSprite.getWidth(), paintBrushSprite.getHeight(), false, false);
+		//batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+		
+		int screenX = Gdx.input.getX();
+		int screenY = Gdx.input.getY();
+		//Vector3 modelVector3= camera.unproject(new Vector3( screenX,screenY,0));
+		Vector3 heroScreenVector3 = camera.project(new Vector3((float)wrl.hero.position.x+wrl.hero.width/2,(float) wrl.hero.position.y-wrl.hero.height/2,0));
+		
+		double angle = Math.atan2( heroScreenVector3.y-screenY -10, screenX - heroScreenVector3.x);
+		//angle = angle*Math.PI/180;
+		angle = Math.toDegrees(angle);
+		//System.out.println(Math.toDegrees(angle));
+		batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 70f, 20f, 1f, 1f,(float)angle);
 		
 		
+		//remember the width and length determine shape of bone, not the image
+	//	batch.draw(new TextureRegion(boneSprite), (float)testBone.position.x,(float) testBone.position.y, 0f , 0f, boneSprite.getWidth(),boneSprite.getHeight(), 1f, 1f, testBone.angle);
+	//	batch.draw(new TextureRegion(boneSprite), (float)testBone1.position.x,(float) testBone1.position.y, 0f , 0f, boneSprite.getWidth(), boneSprite.getHeight(), 1f, 1f, testBone1.angle);
+	//	batch.draw(new TextureRegion(boneSprite), (float)testBone1.position.x,(float) testBone1.position.y, 0f , 0f, boneSprite.getWidth(), boneSprite.getHeight(), 1f, 1f, testBone1.angle);
+
+		
+		//batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+		//testBone.rotateAntiClockWise(1f);
+		//testBone1.rotateAntiClockWise(-1f);
+		for(int i = 0; i < heroSkeleton.bones.length; i++)
+		{
+			Bone currentBone = heroSkeleton.bones[i];
+			batch.draw(new TextureRegion(boneSprite), currentBone.position.x, currentBone.position.y, 0f, 0f, currentBone.length , 2f, 1, 1, currentBone.angle);
+			//System.out.println(currentBone.tailPointPosition.y);
+		}
+	
+		//batch.draw(new TextureRegion(boneSprite), 1500, 400, 0f, 0f, 100f , 10f, 1, 1, 0);
+		//heroSkeleton.bones[1].angle +=1f;
+		
+		
+		batch.draw(new TextureRegion(headSprite), heroSkeleton.bones[0].position.x-130, heroSkeleton.bones[0].position.y-120, 130, 120, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[0].angle );
+		batch.draw(new TextureRegion(bodySprite), heroSkeleton.bones[1].position.x-90, heroSkeleton.bones[1].position.y-160,90, 160, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[1].angle);
+		batch.draw(new TextureRegion(armSprite), heroSkeleton.bones[2].position.x-60, heroSkeleton.bones[2].position.y-150, 60, 150, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[2].angle );
+		batch.draw(new TextureRegion(foreArmSprite), heroSkeleton.bones[3].position.x-70, heroSkeleton.bones[3].position.y-130, 70, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[3].angle );
+		batch.draw(new TextureRegion(armSprite), heroSkeleton.bones[4].position.x-60, heroSkeleton.bones[4].position.y-150, 60, 150, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[4].angle );
+		batch.draw(new TextureRegion(foreArmSprite), heroSkeleton.bones[5].position.x-70, heroSkeleton.bones[5].position.y-130, 70, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[5].angle );
+		batch.draw(new TextureRegion(legSprite), heroSkeleton.bones[6].position.x-95, heroSkeleton.bones[6].position.y-130, 95, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[6].angle );
+		batch.draw(new TextureRegion(bootSprite), heroSkeleton.bones[7].position.x-100, heroSkeleton.bones[7].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[7].angle );
+		batch.draw(new TextureRegion(legSprite), heroSkeleton.bones[8].position.x-95, heroSkeleton.bones[8].position.y-130, 95, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[8].angle );
+		batch.draw(new TextureRegion(bootSprite), heroSkeleton.bones[9].position.x-100, heroSkeleton.bones[9].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[9].angle );
+
+		//0 -- head
+		//1 -- body
+		//2 -- bice1
+		//3 -- forearm1
+		//4 -- bicep2
+		//5 -- forearm2
+		//6 --thight1
+		//7 -- shin1
+		//8 -- thigh1
+		// 9 -- shin1
+		
+		
+		for(int i = 0; i < heroDanceSkeleton.bones.length; i++)
+		{
+			Bone currentBone = heroDanceSkeleton.bones[i];
+			batch.draw(new TextureRegion(boneSprite), currentBone.position.x, currentBone.position.y, 0f, 0f, currentBone.length , 2f, 1, 1, currentBone.angle);
+			//System.out.println(currentBone.tailPointPosition.y);
+		}
+		
+		batch.draw(new TextureRegion(headSprite), heroDanceSkeleton.bones[0].position.x-130, heroDanceSkeleton.bones[0].position.y-120, 130, 120, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[0].angle );
+		batch.draw(new TextureRegion(bodySprite), heroDanceSkeleton.bones[1].position.x-90, heroDanceSkeleton.bones[1].position.y-160,90, 160, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[1].angle);
+		batch.draw(new TextureRegion(armSprite), heroDanceSkeleton.bones[2].position.x-60, heroDanceSkeleton.bones[2].position.y-150, 60, 150, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[2].angle );
+		batch.draw(new TextureRegion(foreArmSprite), heroDanceSkeleton.bones[3].position.x-70, heroDanceSkeleton.bones[3].position.y-130, 70, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[3].angle );
+		batch.draw(new TextureRegion(armSprite), heroDanceSkeleton.bones[4].position.x-60, heroDanceSkeleton.bones[4].position.y-150, 60, 150, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[4].angle );
+		batch.draw(new TextureRegion(foreArmSprite), heroDanceSkeleton.bones[5].position.x-70, heroDanceSkeleton.bones[5].position.y-130, 70, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[5].angle );
+		batch.draw(new TextureRegion(legSprite), heroDanceSkeleton.bones[6].position.x-95, heroDanceSkeleton.bones[6].position.y-130, 95, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[6].angle );
+		batch.draw(new TextureRegion(bootSprite), heroDanceSkeleton.bones[7].position.x-100, heroDanceSkeleton.bones[7].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[7].angle );
+		batch.draw(new TextureRegion(legSprite), heroDanceSkeleton.bones[8].position.x-95, heroDanceSkeleton.bones[8].position.y-130, 95, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[8].angle );
+		batch.draw(new TextureRegion(bootSprite), heroDanceSkeleton.bones[9].position.x-100, heroDanceSkeleton.bones[9].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[9].angle );
+
+		
+		
+		Texture foreArmSprite;
+		Texture armSprite;
+		Texture bodySprite;
+		Texture legSprite;
+		Texture bootSprite;
 		
 		batch.end();
 		

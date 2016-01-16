@@ -9,6 +9,9 @@ public class BasicShooter implements Equipable {
 	public void basicAtt1(float deltaTime,int mouseX, int mouseY, boolean justPressed, LocalWorld wrl)
 	{
 		//fix this, make so that it starts at the weapon point
+		
+		if(justPressed)
+		{
 		Hero hero = wrl.hero;
 		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
 		bulletVelocity = bulletVelocity.scl(100/bulletVelocity.magnitude());
@@ -23,7 +26,7 @@ public class BasicShooter implements Equipable {
 		
 		bulletVelocity = new Vector2(0,0);
 		wrl.entLis.add(new Bullet( (int)(charMidpoint.x )-27,(int)(charMidpoint.y)-27,54,54,bulletVelocity));
-		
+		}
 	}
 	public void basicAtt2(float deltaTime,int mouseX, int mouseY, boolean justPressed,LocalWorld wrl)
 	{
@@ -48,6 +51,7 @@ public class BasicShooter implements Equipable {
 	{
 		
 	}
+	
 	
 
 }
