@@ -127,6 +127,13 @@ public int health;
 	{
 		//this.position.add(this.velocity.scl(deltaTime));
 		//this.position.add(this.velocity.scl(1f));
+		
+		if(this.health < 0 )
+		{
+			this.health = 100;
+			this.position.x = 300;
+			this.position.y = 1500;
+		}
 	}
 	@Override
 	public HStateComp getState()

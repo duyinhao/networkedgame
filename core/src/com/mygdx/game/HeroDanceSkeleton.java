@@ -41,7 +41,10 @@ public class HeroDanceSkeleton implements Skeleton {
 		clockwise = false;
 	}
 	
-	
+	public Bone[] getBones()
+	{
+		return bones;
+	}
 	
 	
 	public void update(float deltaTime)
@@ -65,7 +68,7 @@ public class HeroDanceSkeleton implements Skeleton {
 		if(bones[3].angle > 150)
 		{
 			clockwise = false;
-			}
+		}
 
 		
 		

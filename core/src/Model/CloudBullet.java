@@ -1,15 +1,15 @@
 package Model;
 
-public class Bullet extends Entity<BulletState>  {
+public class CloudBullet extends Entity<BulletState>  {
 	
 
 	public Vector2 velocity;
-	public Bullet()
+	public CloudBullet()
 	{
 		super(  new Vector2(0,0), 10, 10);
 		this.velocity = new Vector2(0,0);
 	}
-	public Bullet( int x, int y, int height, int width, Vector2 velocityVec )
+	public CloudBullet( int x, int y, int height, int width, Vector2 velocityVec )
 	{
 		super(  new Vector2(x,y), width, height);
 		
@@ -27,11 +27,9 @@ public class Bullet extends Entity<BulletState>  {
 		if (object instanceof Hero)
 		{	
 			Hero hero = (Hero)object;
-			hero.health = hero.health - 10;
-			//hero.velocity.y = 100;
-			hero.velocity = this.velocity;
+			//hero.health = hero.health - 10;
+			hero.velocity.y = 100;
 			this.destroyed = true;
-			//hero.health = - hero.health - 1000;
 			//hero.health = hero.health -1;
 			//System.out.println("hit");
 			hero.status=HStates.RUN;

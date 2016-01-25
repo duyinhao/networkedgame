@@ -25,13 +25,16 @@ import Model.BasicCape;
 import Model.BasicShoes;
 import Model.BasicShooter;
 import Model.Bullet;
+import Model.CloudBullet;
 import Model.BulletState;
+import Model.CloudShooter;
 import Model.Collidable;
 import Model.Collision;
 import Model.DStates;
 import Model.DashCape;
 import Model.DoubleJumpShoes;
 import Model.Entity;
+import Model.EquipType;
 import Model.Equipable;
 import Model.HStates;
 import Model.Hero;
@@ -96,8 +99,9 @@ public class MyGdxGame extends ApplicationAdapter{
 	Texture paintBrushSprite;
 	Texture healthBar;
 	Texture spriteSheet;
-	Texture bulletSprite;
+	Texture pbulletSprite;
 	Texture cBulletSprite;
+	Texture bulletSprite;
 	Texture boneSprite;
 	Texture foreArmSprite;
 	Texture armSprite;
@@ -105,6 +109,9 @@ public class MyGdxGame extends ApplicationAdapter{
 	Texture legSprite;
 	Texture bootSprite;
 	Texture headSprite;
+
+	
+	
 	
 	
 	
@@ -119,6 +126,7 @@ public class MyGdxGame extends ApplicationAdapter{
 	Controller userController ;
 	ServerController serverController;
 	
+	SkeletonAnimator heroSkeletonAnimator; 
 	HeroSkeleton heroSkeleton;
 	HeroDanceSkeleton heroDanceSkeleton;
 	@Override
@@ -129,7 +137,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		batch = new SpriteBatch();
 		
 		
-		paintBrushSprite = new Texture(Gdx.files.internal("paintbrush1.png"));
+		paintBrushSprite = new Texture(Gdx.files.internal("cloudGun.png"));
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
 		healthBar = new Texture(Gdx.files.internal("healthBar.png"));
@@ -144,11 +152,38 @@ public class MyGdxGame extends ApplicationAdapter{
 		legSprite= new Texture(Gdx.files.internal("leg.png") );
 		bootSprite= new Texture(Gdx.files.internal("boot.png") );
 		headSprite = new Texture(Gdx.files.internal("head.png") );
+		
+		
 		testBone.rotateLigamentAntiClockWise(30);
 		
 		heroSkeleton = new  HeroSkeleton(100, 1500 ,220, 200,220, 190, 200, 170 );
 		heroDanceSkeleton = new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
 		//heroSkeleton = new  HeroSkeleton(100, 1500 ,5, 10,4, 4, 4, 4 );
+		heroSkeletonAnimator = new SkeletonAnimator(heroSkeleton);
+		heroSkeletonAnimator.register(0, new TextureRegion(headSprite), 130, 120);
+		
+		heroSkeletonAnimator.register(1, new TextureRegion(bodySprite), 90, 160);
+		
+		heroSkeletonAnimator.register(2, new TextureRegion(armSprite), 60, 150);
+		
+		heroSkeletonAnimator.register(3, new TextureRegion(foreArmSprite), 70, 130);
+		
+		heroSkeletonAnimator.register(4, new TextureRegion(armSprite), 60, 150);
+		
+		heroSkeletonAnimator.register(5, new TextureRegion(foreArmSprite), 70, 130);
+		
+		heroSkeletonAnimator.register(6, new TextureRegion(legSprite), 95, 130);
+		
+		heroSkeletonAnimator.register(7, new TextureRegion(bootSprite), 100, 125);
+		
+		heroSkeletonAnimator.register(8, new TextureRegion(legSprite), 95, 130);
+
+		heroSkeletonAnimator.register(9, new TextureRegion(bootSprite), 100, 125);
+
+		
+		
+		
+		
 		
 		TextureRegion[][] tmp = TextureRegion.split(spriteSheet, 40, 41);
 		walkFrames = new TextureRegion[4];
@@ -163,14 +198,28 @@ public class MyGdxGame extends ApplicationAdapter{
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		
 		
-		AnimationBinding<BulletState> bulletBinding = new AnimationBinding<BulletState>();
+		AnimationBinding<BulletState> cbulletBinding = new AnimationBinding<BulletState>();
 		cBulletSprite = new Texture(Gdx.files.internal("cloudBullet.png"));
-
-		TextureRegion bulletRegion = new TextureRegion(cBulletSprite);
+		
+		TextureRegion cbulletRegion = new TextureRegion(cBulletSprite);
 		
 		
-		Animation cbulletAnimation = new Animation(0.1f, bulletRegion);
-		bulletBinding.register(BulletState.NONE, cbulletAnimation);
+		Animation cbulletAnimation = new Animation(0.1f, cbulletRegion);
+		cbulletBinding.register(BulletState.NONE, cbulletAnimation);
+		
+		
+		
+		animationBinder.put(CloudBullet.class, cbulletBinding );
+		
+		
+		AnimationBinding<BulletState> bulletBinding = new AnimationBinding<BulletState>();
+		bulletSprite = new Texture(Gdx.files.internal("bullet400.png"));
+		
+		TextureRegion bulletRegion = new TextureRegion(bulletSprite);
+		
+		
+		Animation bulletAnimation = new Animation(0.1f, bulletRegion);
+		bulletBinding.register(BulletState.NONE, bulletAnimation);
 		
 		
 		
@@ -178,9 +227,9 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		
 		AnimationBinding<BulletState> aEBulletBinding = new AnimationBinding<BulletState>();
-		bulletSprite = new Texture(Gdx.files.internal("bullet1.png"));
+		pbulletSprite = new Texture(Gdx.files.internal("bullet1.png"));
 
-		TextureRegion aEbulletRegion = new TextureRegion(bulletSprite);
+		TextureRegion aEbulletRegion = new TextureRegion(pbulletSprite);
 		
 		
 		Animation aEbulletAnimation = new Animation(0.1f, aEbulletRegion);
@@ -249,7 +298,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		flyR = new Animation(1f,walkFrames);
 		heroBinding.register(HStateComp.FLYR, flyR);
 		
-		walkFrames = new TextureRegion[1];
+		walkFrames = new TextureRegion[1]; 
 		walkFrames[0] = tmp[5][4];
 		flyL = new Animation(1f,walkFrames);
 		heroBinding.register(HStateComp.FLYL, flyL);
@@ -258,10 +307,10 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		stateTime = 0f;
 		//prepare the client for connection
-		//String ipAddress = "127.0.0.1";
-	
+		String ipAddress = "127.0.0.1";
+		//String ipAddress = "10.0.0.5";
 		
-		String ipAddress = "52.35.85.68";
+		//String ipAddress = "52.35.85.68";
 	
 		int udpPort = 54555;
 		int tcpPort = 54777;
@@ -276,13 +325,19 @@ public class MyGdxGame extends ApplicationAdapter{
 			kryo.register(BasicShoes.class);
 			kryo.register(BasicShooter.class);
 			kryo.register(Bullet.class);
+			kryo.register(BulletState.class);
+			kryo.register(CloudBullet.class);
+			kryo.register(CloudShooter.class);
+			kryo.register(Collision.class);
 			kryo.register(Collidable.class);
 			kryo.register(DashCape.class);
 			kryo.register(DoubleJumpShoes.class);
-			
-			kryo.register(Equipable.class);
 			kryo.register(DStates.class);
 			kryo.register(Entity.class);
+			kryo.register(Equipable.class);
+			kryo.register(EquipType.class);
+			
+			
 			kryo.register(Hero.class);
 			kryo.register(HStates.class);
 			kryo.register(IDResponse.class);
@@ -486,10 +541,27 @@ public class MyGdxGame extends ApplicationAdapter{
 			
 			
 			currentAnimation = currentAnimationBinding.returnAnimation(entity.getState());
+			
 			currentFrame = currentAnimation.getKeyFrame(stateTime);	
-			
-			batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
-			
+			if(!(entity instanceof Bullet))
+				batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+			else
+			{
+				Bullet temp = (Bullet)entity;
+				batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+				
+				//batch.draw(currentFrame, (float)(currentAnimationBinding.xOffset + entity.position.x-currentFrame.getRegionWidth()/2 ), (float)(currentAnimationBinding.yOffset +entity.position.y -currentFrame.getRegionHeight()/2) , (float)currentFrame.getRegionWidth()/2, (float) currentFrame.getRegionHeight()/2,  currentFrame.getRegionHeight(),currentFrame.getRegionWidth(), 1f, 1f,0f , true);
+				
+				
+				
+			//	batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation, clockwise);
+				
+				//batch.draw(currentFrame, x, y, originX, originY, width, height, scaleX, scaleY, rotation, srcX, srcY, srcWidth, srcHeight, flipX, flipY);
+				//batch.draw(new TextureRegion(currentFrame), currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y  , 0f,  0f, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1f, 1f,(float) Math.toDegrees(Math.tanh(temp.velocity.y/temp.velocity.x)) , false);
+
+				
+				//batch.draw(new TextureRegion(currentFrame), , y, originX, originY, width, height, scaleX, scaleY, rotation);
+			}
 			if(entity instanceof Hero)
 			{
 				Hero curHero = (Hero)entity;
@@ -513,7 +585,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		//angle = angle*Math.PI/180;
 		angle = Math.toDegrees(angle);
 		//System.out.println(Math.toDegrees(angle));
-		batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 70f, 20f, 1f, 1f,(float)angle);
+		batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
 		
 		
 		//remember the width and length determine shape of bone, not the image
@@ -530,23 +602,16 @@ public class MyGdxGame extends ApplicationAdapter{
 			Bone currentBone = heroSkeleton.bones[i];
 			batch.draw(new TextureRegion(boneSprite), currentBone.position.x, currentBone.position.y, 0f, 0f, currentBone.length , 2f, 1, 1, currentBone.angle);
 			//System.out.println(currentBone.tailPointPosition.y);
+			batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
+
 		}
 	
 		//batch.draw(new TextureRegion(boneSprite), 1500, 400, 0f, 0f, 100f , 10f, 1, 1, 0);
 		//heroSkeleton.bones[1].angle +=1f;
 		
+		heroSkeletonAnimator.draw(batch);
 		
-		batch.draw(new TextureRegion(headSprite), heroSkeleton.bones[0].position.x-130, heroSkeleton.bones[0].position.y-120, 130, 120, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[0].angle );
-		batch.draw(new TextureRegion(bodySprite), heroSkeleton.bones[1].position.x-90, heroSkeleton.bones[1].position.y-160,90, 160, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[1].angle);
-		batch.draw(new TextureRegion(armSprite), heroSkeleton.bones[2].position.x-60, heroSkeleton.bones[2].position.y-150, 60, 150, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[2].angle );
-		batch.draw(new TextureRegion(foreArmSprite), heroSkeleton.bones[3].position.x-70, heroSkeleton.bones[3].position.y-130, 70, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[3].angle );
-		batch.draw(new TextureRegion(armSprite), heroSkeleton.bones[4].position.x-60, heroSkeleton.bones[4].position.y-150, 60, 150, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[4].angle );
-		batch.draw(new TextureRegion(foreArmSprite), heroSkeleton.bones[5].position.x-70, heroSkeleton.bones[5].position.y-130, 70, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[5].angle );
-		batch.draw(new TextureRegion(legSprite), heroSkeleton.bones[6].position.x-95, heroSkeleton.bones[6].position.y-130, 95, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[6].angle );
-		batch.draw(new TextureRegion(bootSprite), heroSkeleton.bones[7].position.x-100, heroSkeleton.bones[7].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[7].angle );
-		batch.draw(new TextureRegion(legSprite), heroSkeleton.bones[8].position.x-95, heroSkeleton.bones[8].position.y-130, 95, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[8].angle );
-		batch.draw(new TextureRegion(bootSprite), heroSkeleton.bones[9].position.x-100, heroSkeleton.bones[9].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroSkeleton.bones[9].angle );
-
+		
 		//0 -- head
 		//1 -- body
 		//2 -- bice1

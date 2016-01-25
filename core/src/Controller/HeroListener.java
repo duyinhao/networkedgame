@@ -2,6 +2,7 @@ package Controller;
 
 import java.util.ArrayList;
 
+import Model.AEPaintBullet;
 import Model.Entity;
 import Model.Hero;
 import Model.HeroArr;
@@ -55,7 +56,10 @@ public class HeroListener extends Listener {
 		}
 		else if(object instanceof Entity)
 		{
-			entityArr.add((Entity)object);
+			if(object instanceof AEPaintBullet)
+				entityArr.add(0,(Entity) object);
+			else
+				entityArr.add((Entity)object);
 			System.out.println("received bullets");
 		}
 		

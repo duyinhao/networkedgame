@@ -40,6 +40,10 @@ public class HeroSkeleton implements Skeleton {
 	}
 	
 	
+	public Bone[] getBones()
+	{
+		return bones;
+	}
 	
 	
 	public void update(float deltaTime)

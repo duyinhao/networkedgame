@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.esotericsoftware.kryonet.Client;
 
+import Model.AEPaintBullet;
 import Model.Entity;
 
 public class EntListener {
@@ -17,7 +18,10 @@ public class EntListener {
 	}
 	public void add(Entity ent)
 	{
-		listenedList.add(ent);
+		if(ent instanceof AEPaintBullet)
+			listenedList.add(0, ent);
+		else
+			listenedList.add(ent);
 		
 		client.sendTCP(ent);
 	}

@@ -10,6 +10,6 @@ public class TeleportGun extends BasicShooter {
 		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
 		bulletVelocity = bulletVelocity.scl(1/bulletVelocity.magnitude());
 		
-		wrl.entityArr.add(new Bullet( (int)(hero.position.x ),(int)(hero.position.y),54,54,bulletVelocity));
+		wrl.entityArr.add(new CloudBullet( (int)(hero.position.x ),(int)(hero.position.y),54,54,bulletVelocity));
 	}
 }
