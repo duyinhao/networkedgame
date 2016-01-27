@@ -1,19 +1,20 @@
 package Model;
 
 public class BasicShooter implements Equipable {
-	
+	int length;
 	public BasicShooter()
 	{
-
+		length = 100;
 	}
 	public void basicAtt1(float deltaTime,int mouseX, int mouseY, boolean justPressed, LocalWorld wrl)
 	{
 		if(justPressed)
 		{
+			
 		Hero hero = wrl.hero;
 		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
 		
-		Vector2 relativeStartingPoint = bulletVelocity.scl(100/bulletVelocity.magnitude());
+		Vector2 relativeStartingPoint = bulletVelocity.scl(length/bulletVelocity.magnitude());
 		bulletVelocity = bulletVelocity.scl(500/bulletVelocity.magnitude());
 		
 		

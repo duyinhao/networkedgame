@@ -30,6 +30,8 @@ public class Controller {
 	}
 	public void update(float deltaTime)
 	{
+		
+		
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
 		{
 			int screenX = Gdx.input.getX();

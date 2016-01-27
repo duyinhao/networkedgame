@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import Model.HStates;
 
 public class HeroSkeleton implements Skeleton {
-	public Bone[] bones = new Bone[10];
+	public Bone[] bones = new Bone[11];
 	HStates state;
 	//index to bone
 	//0 -- head
@@ -18,6 +18,7 @@ public class HeroSkeleton implements Skeleton {
 	//7 -- shin1
 	//8 -- thigh1
 	// 9 -- shin1
+	//10 weapon
 	float counter;
 	
 	public HeroSkeleton(int headXPos, int headYPos ,int thighLength, int shinLength, int bodyLength, int bicepLength, int forearmLength, int headLength )
@@ -36,6 +37,8 @@ public class HeroSkeleton implements Skeleton {
 		
 		bones[8] = new Bone(bones[1], thighLength, 225);
 		bones[9] = new Bone(bones[8], shinLength, 270);
+		//
+		bones[10] = new Bone(bones[0], 0 , 0);
 		counter = 0;
 	}
 	
@@ -46,57 +49,8 @@ public class HeroSkeleton implements Skeleton {
 	}
 	
 	
-	public void update(float deltaTime)
-	{
-		
-		counter+=deltaTime;
-		System.out.println(counter);
-		if(counter < 0.2)
-		{
-		bones[2].setAngle(10);
-		bones[3].setAngle(45);
-		
-		bones[4].setAngle(190);
-		bones[5].setAngle(235);
-		
-		bones[6].setAngle(0);
-		bones[7].setAngle(270);
-		
-		bones[8].setAngle(235);
-		bones[9].setAngle(145);
-		}
-		else
-		{
-		
-		bones[2].setAngle(270);
-		bones[3].setAngle(300);
-		
-		bones[4].setAngle(265);
-		bones[5].setAngle(290);
-		
-		bones[6].setAngle(260);
-		bones[7].setAngle(255);
-		
-		bones[8].setAngle(250);
-		bones[9].setAngle(245);
-		}
-		if(counter> 0.4)
-		{
-			counter=0f;
-		}
-		bones[0].position.x +=0.4f;
-		for(int i = 0 ; i < bones.length; i++)
-		{
-			bones[i].updateTailPoint();
-		}
 
-		
-		
-	}
-	public void setState(HStates state)
-	{
-		this.state = state;
-	}
+	
 	
 	
 	

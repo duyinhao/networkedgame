@@ -109,7 +109,7 @@ public class MyGdxGame extends ApplicationAdapter{
 	Texture legSprite;
 	Texture bootSprite;
 	Texture headSprite;
-
+	Texture entitySprite;
 	
 	
 	
@@ -133,7 +133,7 @@ public class MyGdxGame extends ApplicationAdapter{
 	public void create () {
 		
 		animationBinder = new HashMap<Class<?>, AnimationBinding> ();
-		
+		entitySprite = new Texture(Gdx.files.internal("megamansoccer1.png"));
 		batch = new SpriteBatch();
 		
 		
@@ -156,29 +156,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		testBone.rotateLigamentAntiClockWise(30);
 		
-		heroSkeleton = new  HeroSkeleton(100, 1500 ,220, 200,220, 190, 200, 170 );
-		heroDanceSkeleton = new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
-		//heroSkeleton = new  HeroSkeleton(100, 1500 ,5, 10,4, 4, 4, 4 );
-		heroSkeletonAnimator = new SkeletonAnimator(heroSkeleton);
-		heroSkeletonAnimator.register(0, new TextureRegion(headSprite), 130, 120);
 		
-		heroSkeletonAnimator.register(1, new TextureRegion(bodySprite), 90, 160);
-		
-		heroSkeletonAnimator.register(2, new TextureRegion(armSprite), 60, 150);
-		
-		heroSkeletonAnimator.register(3, new TextureRegion(foreArmSprite), 70, 130);
-		
-		heroSkeletonAnimator.register(4, new TextureRegion(armSprite), 60, 150);
-		
-		heroSkeletonAnimator.register(5, new TextureRegion(foreArmSprite), 70, 130);
-		
-		heroSkeletonAnimator.register(6, new TextureRegion(legSprite), 95, 130);
-		
-		heroSkeletonAnimator.register(7, new TextureRegion(bootSprite), 100, 125);
-		
-		heroSkeletonAnimator.register(8, new TextureRegion(legSprite), 95, 130);
-
-		heroSkeletonAnimator.register(9, new TextureRegion(bootSprite), 100, 125);
 
 		
 		
@@ -392,6 +370,30 @@ public class MyGdxGame extends ApplicationAdapter{
 		}
 		wrl = new LocalWorld(collisionMapArr,(int) layer.getTileWidth() ,client );
 		
+		heroSkeleton = new  HeroSkeleton(100, 1500 ,220, 200,220, 190, 200, 170 );
+		heroDanceSkeleton = new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
+		//heroSkeleton = new  HeroSkeleton(100, 1500 ,5, 10,4, 4, 4, 4 );
+		heroSkeletonAnimator = new SkeletonAnimator(heroSkeleton,wrl.hero );
+		heroSkeletonAnimator.register(0, new TextureRegion(headSprite), 130, 120);
+		
+		heroSkeletonAnimator.register(1, new TextureRegion(bodySprite), 90, 160);
+		
+		heroSkeletonAnimator.register(2, new TextureRegion(armSprite), 60, 150);
+		
+		heroSkeletonAnimator.register(3, new TextureRegion(foreArmSprite), 70, 130);
+		
+		heroSkeletonAnimator.register(4, new TextureRegion(armSprite), 60, 150);
+		
+		heroSkeletonAnimator.register(5, new TextureRegion(foreArmSprite), 70, 130);
+		
+		heroSkeletonAnimator.register(6, new TextureRegion(legSprite), 95, 130);
+		
+		heroSkeletonAnimator.register(7, new TextureRegion(bootSprite), 100, 125);
+		
+		heroSkeletonAnimator.register(8, new TextureRegion(legSprite), 95, 130);
+
+		heroSkeletonAnimator.register(9, new TextureRegion(bootSprite), 100, 125);
+		
 		//always add the listener first before the requests otherwise wont register response
 		//pehpaps a different structure is need to avoid this annoying bug
 		client.addListener(new IDListener(wrl.user));
@@ -494,9 +496,8 @@ public class MyGdxGame extends ApplicationAdapter{
 	    stateTime = stateTime+  deltaTime;
 	    
 	    
-	    heroSkeleton.update(deltaTime);
 	    heroDanceSkeleton.update(deltaTime);
-	    
+	    heroSkeletonAnimator.update(deltaTime, wrl.hero);
 	   camera.position.x = wrl.hero.position.x;
 	   camera.position.y = wrl.hero.position.y;
 	   
@@ -548,8 +549,17 @@ public class MyGdxGame extends ApplicationAdapter{
 			else
 			{
 				Bullet temp = (Bullet)entity;
-				batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+				//batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+				float xPos = entity.position.x + currentAnimationBinding.xOffset ;
+				float yPos = currentAnimationBinding.yOffset +entity.position.y;
+				float angle = (float)Math.toDegrees(Math.atan(temp.velocity.y/temp.velocity.x));
 				
+				if(temp.velocity.x < 0)
+				{
+					angle = angle + 180;
+				}
+				
+				batch.draw(currentFrame,xPos , yPos,  currentFrame.getRegionWidth()/2 ,currentFrame.getRegionHeight()/2 , currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1f, 1f, angle);
 				//batch.draw(currentFrame, (float)(currentAnimationBinding.xOffset + entity.position.x-currentFrame.getRegionWidth()/2 ), (float)(currentAnimationBinding.yOffset +entity.position.y -currentFrame.getRegionHeight()/2) , (float)currentFrame.getRegionWidth()/2, (float) currentFrame.getRegionHeight()/2,  currentFrame.getRegionHeight(),currentFrame.getRegionWidth(), 1f, 1f,0f , true);
 				
 				
@@ -562,6 +572,10 @@ public class MyGdxGame extends ApplicationAdapter{
 				
 				//batch.draw(new TextureRegion(currentFrame), , y, originX, originY, width, height, scaleX, scaleY, rotation);
 			}
+			
+			
+			
+			
 			if(entity instanceof Hero)
 			{
 				Hero curHero = (Hero)entity;
@@ -569,7 +583,8 @@ public class MyGdxGame extends ApplicationAdapter{
 				
 			
 			}
-			
+			batch.draw(entitySprite , entity.position.x, entity.position.y, entity.width, entity.height);
+
 			//batch.draw(bulletSprite, entity.position.x, entity.position.y);
 		}
 		

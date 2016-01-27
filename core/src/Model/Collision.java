@@ -113,6 +113,22 @@ public class Collision {
 		
 		}
 		
+		//replace all -1 with 0
+		for(int x = 0;  x < collisionMapArr.length; x++ )
+		{
+			for(int y = collisionMapArr[0].length -1; y >=0; y--)
+			{
+				if(collisionMapArr[x][y]==1 )
+				{
+					upColMap[x][y] = 0;
+					leftColMap[x][y] = 0;
+					rightColMap[x][y] = 0;
+					downColMap[x][y] = 0;
+				}
+			}
+			
+		}
+		
 		
 		
 	}
@@ -125,11 +141,22 @@ public class Collision {
 		tileY = y/tileWidth ;
 		//System.out.println(tileX+" "+tileY);
 		
-		
+		//this basically means that we consider areas outside of the the map to be a wall technically
+		if(x<0|| x>upColMap.length*tileWidth||y<0 || y>upColMap[0].length*tileWidth)
+		{
+			return 0;
+			
+		}
+		//if the point is already in a wall, then of course the distance to the wall is 0
+		if(collisionMapArr[tileX][tileY] == 1)
+		{
+			return 0;
+		}
 		switch(dir)
 		{
 			case UP:
-				return upColMap[tileX][tileY]*tileWidth +(tileWidth- (y%tileWidth));
+		
+					return upColMap[tileX][tileY]*tileWidth +(tileWidth- (y%tileWidth));
 				
 				
 			case DOWN:
@@ -141,7 +168,7 @@ public class Collision {
 				
 				return leftColMap[tileX][tileY]*tileWidth +(x%tileWidth);
 			case RIGHT:
-				
+				//System.out.println(rightColMap[tileX][tileY]*tileWidth + tileWidth - (x%tileWidth)); 
 				return rightColMap[tileX][tileY]*tileWidth + tileWidth - (x%tileWidth); 
 				
 			default:

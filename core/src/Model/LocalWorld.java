@@ -99,7 +99,6 @@ public class LocalWorld {
 				//hero.position.x = hero.position.x + actualXMovementWithCollision(v,sclVelocity);
 
 				hero.position.x = hero.position.x + actualXMovementWithCollision(hero,sclVelocity);
-				
 				hero.position.y = hero.position.y + actualYMovementWithCollision(hero, sclVelocity);
 				
 			//	hero.velocity.x = actualXMovementWithCollision(hero,sclVelocity);
@@ -198,6 +197,7 @@ public class LocalWorld {
 	}
 	public float actualYMovementWithCollision(Entity entity, Vector2 sclVelocityVec)
 	{
+		
 		int steps = entity.width/colSystem.tileWidth;
 		int y;
 		Vector2[] points = new Vector2[steps+2];
@@ -217,7 +217,8 @@ public class LocalWorld {
 		{
 			points[i] = new Vector2(entity.position.x + i*colSystem.tileWidth,y );
 			
-		}		
+		}
+		
 		return actualYMovementWithCollision(points, sclVelocityVec);
 	}
 	
@@ -230,7 +231,7 @@ public class LocalWorld {
 		for(Vector2 point: positionPoints)
 		{
 			temp = actualXMovementWithCollision(point,sclVelocityVec);
-			
+			//System.out.println("sdfsdf"+temp);
 			if(Math.abs(temp )< Math.abs(actX))
 			{
 				actX = temp;
@@ -258,12 +259,11 @@ public class LocalWorld {
 	//point calcultation
 	public float actualXMovementWithCollision( Vector2 positionVec,Vector2 sclVelocityVec)
 	{
-		//the distance to the wall for RIGHT and UP is subtracted by 1 so that if the character were to move by (distance - 1) they would still be on the same tile
-		//this is because by convention when a point is on a border it is considered part of the top block or the right block
-		
+
 		if(sclVelocityVec.x >0)
 		{
-			return Math.min( sclVelocityVec.x , colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.RIGHT)-1 );
+			//System.out.println(colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.RIGHT) );
+			return Math.min( sclVelocityVec.x , colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.RIGHT) );
 		}
 		else if(sclVelocityVec.x <0)
 		{
@@ -277,13 +277,13 @@ public class LocalWorld {
 	public float actualYMovementWithCollision(Vector2 positionVec, Vector2 sclVelocity)
 	{
 
-		//the distance to the wall for RIGHT and UP is subtracted by 1 so that if the character were to move by (distance - 1) they would still be on the same tile
-		//this is because by convention when a point is on a border it is considered part of the top block(if border is horizontal) or the right block(if border is vertical)
-		
+	
 		//hero.position.x = hero.position.x + actualXMovementWithCollision(positionVec,sclVelocity);
+		
+		
 		if(sclVelocity.y>0)
 		{
-			return Math.min(sclVelocity.y, colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.UP)-1) ;
+			return Math.min(sclVelocity.y, colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.UP)) ;
 		}
 		else if(sclVelocity.y<0)
 		{
