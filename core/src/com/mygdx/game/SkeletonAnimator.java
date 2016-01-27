@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import Model.DStates;
 import Model.Hero;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -7,27 +8,58 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class SkeletonAnimator {
 	public Skeleton skeleton;
+	public PinGraphic[] boneGraphics;
+	
+	//used to store all graphics
 	public PinGraphic[] graphics;
+	
 	float counter;
 	Hero hero;
+	Bone weaponBone;
+	PinGraphic weaponGraphic;
+	
 	public SkeletonAnimator(Skeleton skeleton, Hero hero)
 	{
 		this.skeleton = skeleton;
-		graphics = new PinGraphic[skeleton.getBones().length];
+		boneGraphics = new PinGraphic[skeleton.getBones().length];
+		graphics = new PinGraphic[skeleton.getBones().length*2];
 		counter = 0;
 		this.hero = hero;
+		weaponBone = new Bone(skeleton.getBones()[0], 0, 0);
 	}
 	
 	public void draw(SpriteBatch batch)
 	{
-		for(int i = 0 ; i < graphics.length ; i++)
+		if(hero.direction ==DStates.RIGHT )
 		{
-			if(graphics[i]!=null)
+			for(int i = 0 ; i <= 9 ; i++)
 			{
-				Bone currentBone = skeleton.getBones()[i];
-				PinGraphic currentGraphic = graphics[i];
-				batch.draw(graphics[i].graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, graphics[i].graphic.getRegionWidth(), graphics[i].graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
+				if(graphics[i]!=null)
+				{
+					Bone currentBone = skeleton.getBones()[i];
+					PinGraphic currentGraphic = graphics[i];
+					batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
+				}
 			}
+		}
+//		if(hero.direction ==DStates.LEFT )
+//		{
+//			System.out.println("left");
+//			for(int i = 10 ; i <= 19 ; i++)
+//			{
+//				if(graphics[i]!=null)
+//				{
+//					Bone currentBone = skeleton.getBones()[i];
+//					PinGraphic currentGraphic = graphics[i];
+//					batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
+//				}
+//			}
+//		}
+		if(weaponGraphic!=null)
+		{
+			Bone currentBone = weaponBone;
+			PinGraphic currentGraphic = weaponGraphic;
+			batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
 		}
 	}
 	public void update(float deltaTime,Hero hero)
@@ -41,21 +73,23 @@ public class SkeletonAnimator {
 		{
 		if(counter < 0.2)
 		{
+			bones[1].setAngle(255);
+			
 			bones[2].setAngle(10);
 			bones[3].setAngle(45);
 		
 			bones[4].setAngle(190);
 			bones[5].setAngle(235);
 		
-			bones[6].setAngle(0);
+			bones[6].setAngle(325);
 			bones[7].setAngle(270);
 		
 			bones[8].setAngle(235);
-			bones[9].setAngle(145);
+			bones[9].setAngle(160);
 		}
 		else
 		{
-		
+			bones[1].setAngle(255);
 			bones[2].setAngle(270);
 			bones[3].setAngle(300);
 		
@@ -73,8 +107,10 @@ public class SkeletonAnimator {
 		}
 		else if(hero.getState() == HStateComp.RUNL)
 		{
+			
 			if(counter < 0.2)
 			{
+				
 				bones[2].setAngle(10);
 				bones[3].setAngle(45);
 			
@@ -89,7 +125,7 @@ public class SkeletonAnimator {
 			}
 			else
 			{
-			
+				
 				bones[2].setAngle(270);
 				bones[3].setAngle(300);
 			
@@ -147,6 +183,7 @@ public class SkeletonAnimator {
 
 	//	System.out.println(this.getHeight());
 		//hero.height = (int)this.getHeight();
+		
 		if(counter> 0.4)
 		{
 			counter=0f;
@@ -161,6 +198,15 @@ public class SkeletonAnimator {
 	public void register(int boneIndex , TextureRegion region, int xPinPos, int yPinPos)
 	{
 		graphics[boneIndex] = new PinGraphic(region, xPinPos, yPinPos);
+	}
+	private void registerBoneGrahics(int boneIndex,int graphicIndex )
+	{
+		boneGraphics[boneIndex] = graphics[graphicIndex] ;
+	}
+	
+	public void registerWeaponGrahic(TextureRegion region, int xPinPos, int yPinPos)
+	{
+		weaponGraphic = new PinGraphic(region, xPinPos, yPinPos); 
 	}
 	public float getHeight()
 	{

@@ -262,8 +262,8 @@ public class LocalWorld {
 
 		if(sclVelocityVec.x >0)
 		{
-			//System.out.println(colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.RIGHT) );
-			return Math.min( sclVelocityVec.x , colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.RIGHT) );
+			//minus 1 so that the character remains in a nonblock area
+			return Math.min( sclVelocityVec.x , colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.RIGHT) -1);
 		}
 		else if(sclVelocityVec.x <0)
 		{
@@ -283,7 +283,7 @@ public class LocalWorld {
 		
 		if(sclVelocity.y>0)
 		{
-			return Math.min(sclVelocity.y, colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.UP)) ;
+			return Math.min(sclVelocity.y, colSystem.getDistToWall((int)positionVec.x, (int)positionVec.y, DStates.UP)-1) ;
 		}
 		else if(sclVelocity.y<0)
 		{

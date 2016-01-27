@@ -111,7 +111,12 @@ public class MyGdxGame extends ApplicationAdapter{
 	Texture headSprite;
 	Texture entitySprite;
 	
-	
+	Texture heroHead1;
+	Texture heroHead2;
+	Texture heroTrunk;
+	Texture heroBody;
+	Texture heroLeg1;
+	Texture heroLeg2;
 	
 	
 	
@@ -137,7 +142,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		batch = new SpriteBatch();
 		
 		
-		paintBrushSprite = new Texture(Gdx.files.internal("cloudGun.png"));
+		paintBrushSprite = new Texture(Gdx.files.internal("bazookaGunScale.png"));
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
 		healthBar = new Texture(Gdx.files.internal("healthBar.png"));
@@ -157,7 +162,12 @@ public class MyGdxGame extends ApplicationAdapter{
 		testBone.rotateLigamentAntiClockWise(30);
 		
 		
-
+		heroHead1= new Texture(Gdx.files.internal("heroHead1.png"));
+		heroHead2 = new Texture(Gdx.files.internal("heroHead2.png")); 
+		heroTrunk= new Texture(Gdx.files.internal("heroTrunk.png"));
+		heroBody= new Texture(Gdx.files.internal("heroBody.png"));
+		heroLeg1= new Texture(Gdx.files.internal("heroLeg1.png"));
+		heroLeg2= new Texture(Gdx.files.internal("heroLeg2.png"));
 		
 		
 		
@@ -370,33 +380,60 @@ public class MyGdxGame extends ApplicationAdapter{
 		}
 		wrl = new LocalWorld(collisionMapArr,(int) layer.getTileWidth() ,client );
 		
-		heroSkeleton = new  HeroSkeleton(100, 1500 ,220, 200,220, 190, 200, 170 );
+		///public HeroSkeleton(int headXPos, int headYPos ,int thighLength, int shinLength, int bodyLength, int bicepLength, int forearmLength, int headLength )
+
+		heroSkeleton = new  HeroSkeleton(100, 1500 ,19, 18,19, 18, 18, 20 );
 		heroDanceSkeleton = new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
 		//heroSkeleton = new  HeroSkeleton(100, 1500 ,5, 10,4, 4, 4, 4 );
 		heroSkeletonAnimator = new SkeletonAnimator(heroSkeleton,wrl.hero );
-		heroSkeletonAnimator.register(0, new TextureRegion(headSprite), 130, 120);
 		
-		heroSkeletonAnimator.register(1, new TextureRegion(bodySprite), 90, 160);
 		
-		heroSkeletonAnimator.register(2, new TextureRegion(armSprite), 60, 150);
 		
-		heroSkeletonAnimator.register(3, new TextureRegion(foreArmSprite), 70, 130);
+		heroSkeletonAnimator.register(0, new TextureRegion(heroHead1), 22, 21);
 		
-		heroSkeletonAnimator.register(4, new TextureRegion(armSprite), 60, 150);
+		heroSkeletonAnimator.register(1, new TextureRegion(heroBody), 10, 20);
 		
-		heroSkeletonAnimator.register(5, new TextureRegion(foreArmSprite), 70, 130);
+		heroSkeletonAnimator.register(2, new TextureRegion(heroTrunk), 9, 15);
 		
-		heroSkeletonAnimator.register(6, new TextureRegion(legSprite), 95, 130);
+		heroSkeletonAnimator.register(3, new TextureRegion(heroTrunk), 9, 15);
 		
-		heroSkeletonAnimator.register(7, new TextureRegion(bootSprite), 100, 125);
+		heroSkeletonAnimator.register(4, new TextureRegion(heroTrunk), 9, 15);
 		
-		heroSkeletonAnimator.register(8, new TextureRegion(legSprite), 95, 130);
+		heroSkeletonAnimator.register(5, new TextureRegion(heroTrunk), 9, 15);
+		
+		heroSkeletonAnimator.register(6, new TextureRegion(heroTrunk), 9, 15);
+		
+		heroSkeletonAnimator.register(7, new TextureRegion(heroLeg2), 12, 15);
+		
+		heroSkeletonAnimator.register(8, new TextureRegion(heroTrunk),9, 15);
 
-		heroSkeletonAnimator.register(9, new TextureRegion(bootSprite), 100, 125);
+		heroSkeletonAnimator.register(9, new TextureRegion(heroLeg2), 12, 15);
 		
+		
+		heroSkeletonAnimator.register(10, new TextureRegion(heroHead2), 22, 21);
+		
+		heroSkeletonAnimator.register(11, new TextureRegion(heroBody), 10, 20);
+		
+		heroSkeletonAnimator.register(12, new TextureRegion(heroTrunk), 9, 15);
+		
+		heroSkeletonAnimator.register(13, new TextureRegion(heroTrunk), 9, 15);
+		
+		heroSkeletonAnimator.register(14, new TextureRegion(heroTrunk), 9, 15);
+		
+		heroSkeletonAnimator.register(15, new TextureRegion(heroTrunk), 9, 15);
+		
+		heroSkeletonAnimator.register(16, new TextureRegion(heroTrunk), 9, 15);
+		
+		heroSkeletonAnimator.register(17, new TextureRegion(heroLeg1), 12, 15);
+		
+		heroSkeletonAnimator.register(18, new TextureRegion(heroTrunk),9, 15);
+
+		heroSkeletonAnimator.register(19, new TextureRegion(heroLeg1), 12, 15);
+		
+		heroSkeletonAnimator.registerWeaponGrahic(new TextureRegion(paintBrushSprite), 57, 57);
 		//always add the listener first before the requests otherwise wont register response
 		//pehpaps a different structure is need to avoid this annoying bug
-		client.addListener(new IDListener(wrl.user));
+		client.addListener(new IDListener(wrl));
 		client.addListener(new HeroListener(wrl.heroArr, wrl.entityArr));
 		
 		//change this to a proper request
@@ -497,7 +534,7 @@ public class MyGdxGame extends ApplicationAdapter{
 	    
 	    
 	    heroDanceSkeleton.update(deltaTime);
-	    heroSkeletonAnimator.update(deltaTime, wrl.hero);
+	    heroSkeletonAnimator.update(deltaTime,wrl.hero);
 	   camera.position.x = wrl.hero.position.x;
 	   camera.position.y = wrl.hero.position.y;
 	   
@@ -659,14 +696,10 @@ public class MyGdxGame extends ApplicationAdapter{
 
 		
 		
-		Texture foreArmSprite;
-		Texture armSprite;
-		Texture bodySprite;
-		Texture legSprite;
-		Texture bootSprite;
+
 		
 		batch.end();
-		
+		//System.out.println(wrl.hero.velocity.y);
 		userController.update(deltaTime);
 		wrl.upate(deltaTime);
 		//wrl.update(deltaTime);

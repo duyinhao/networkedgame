@@ -59,7 +59,7 @@ public class Controller {
 		//System.out.println(wrl);
 		if(wrl.user.heroID != -1)
 		{
-			wrl.hero = wrl.heroArr.arr[wrl.user.heroID];
+			//wrl.hero = wrl.heroArr.arr[wrl.user.heroID];
 		 if(Gdx.input.isKeyPressed(Input.Keys.A))
 		 {
 			 if(wrl.hero.status == HStates.STAND)
@@ -82,7 +82,7 @@ public class Controller {
 		 }
 		 else 
 		 {
-			
+		
 			 if(wrl.hero.velocity.y<0&&wrl.actualYMovementWithCollision(wrl.hero, wrl.hero.velocity)==0)
 			 {
 				 wrl.hero.status = HStates.STAND;
