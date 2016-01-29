@@ -1,7 +1,9 @@
 package com.mygdx.game;
 
+import Model.Bone;
 import Model.DStates;
 import Model.Hero;
+import Model.Skeleton;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,17 +17,17 @@ public class SkeletonAnimator {
 	
 	float counter;
 	Hero hero;
-	Bone weaponBone;
+	
 	PinGraphic weaponGraphic;
 	
-	public SkeletonAnimator(Skeleton skeleton, Hero hero)
+	public SkeletonAnimator( Hero hero)
 	{
-		this.skeleton = skeleton;
+		this.skeleton = hero.heroSkeleton;
 		boneGraphics = new PinGraphic[skeleton.getBones().length];
 		graphics = new PinGraphic[skeleton.getBones().length*2];
 		counter = 0;
 		this.hero = hero;
-		weaponBone = new Bone(skeleton.getBones()[0], 0, 0);
+		
 	}
 	
 	public void draw(SpriteBatch batch)
@@ -42,22 +44,22 @@ public class SkeletonAnimator {
 				}
 			}
 		}
-//		if(hero.direction ==DStates.LEFT )
-//		{
-//			System.out.println("left");
-//			for(int i = 10 ; i <= 19 ; i++)
-//			{
-//				if(graphics[i]!=null)
-//				{
-//					Bone currentBone = skeleton.getBones()[i];
-//					PinGraphic currentGraphic = graphics[i];
-//					batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
-//				}
-//			}
-//		}
+		if(hero.direction ==DStates.LEFT )
+	{
+		System.out.println("left");
+			for(int i = 10 ; i <= 19 ; i++)
+			{
+				if(graphics[i]!=null)
+				{
+					Bone currentBone = skeleton.getBones()[i-10];
+					PinGraphic currentGraphic = graphics[i];
+					batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
+				}
+			}
+		}
 		if(weaponGraphic!=null)
 		{
-			Bone currentBone = weaponBone;
+			Bone currentBone = hero.weaponBone;
 			PinGraphic currentGraphic = weaponGraphic;
 			batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
 		}
@@ -67,7 +69,6 @@ public class SkeletonAnimator {
 		counter+=deltaTime;
 		//System.out.println(counter);
 		Bone[] bones = skeleton.getBones();
-		
 		
 		if(hero.getState() == HStateComp.RUNR)
 		{
@@ -105,48 +106,7 @@ public class SkeletonAnimator {
 		
 
 		}
-		else if(hero.getState() == HStateComp.RUNL)
-		{
-			
-			if(counter < 0.2)
-			{
-				
-				bones[2].setAngle(10);
-				bones[3].setAngle(45);
-			
-				bones[4].setAngle(190);
-				bones[5].setAngle(235);
-			
-				bones[6].setAngle(0);
-				bones[7].setAngle(270);
-			
-				bones[8].setAngle(235);
-				bones[9].setAngle(145);
-			}
-			else
-			{
-				
-				bones[2].setAngle(270);
-				bones[3].setAngle(300);
-			
-				bones[4].setAngle(265);
-				bones[5].setAngle(290);
-			
-				bones[6].setAngle(260);
-				bones[7].setAngle(255);
-			
-				bones[8].setAngle(250);
-				bones[9].setAngle(245);
-				
-				
-
-			}
-			
-			
-			
-			
-			
-		}
+		
 		else if(hero.getState() == HStateComp.JUMPR)
 		{
 			bones[1].setAngle(255);
@@ -177,6 +137,70 @@ public class SkeletonAnimator {
 			bones[8].setAngle(270);
 			bones[9].setAngle(270);
 			
+		}
+		else if(hero.getState() == HStateComp.RUNL)
+		{
+			
+			if(counter < 0.2)
+			{
+				
+				
+				
+			
+			
+				bones[1].setAngle(-75);
+				
+				bones[2].setAngle(170);
+				bones[3].setAngle(135);
+			
+				bones[4].setAngle(-10);
+				bones[5].setAngle(-45);
+			
+				bones[6].setAngle(-145);
+				bones[7].setAngle(-90);
+			
+				bones[8].setAngle(-55);
+				bones[9].setAngle(20);
+			}
+			else
+			{
+				
+				bones[1].setAngle(-75);
+				bones[2].setAngle(-90);
+				bones[3].setAngle(-120);
+			
+				bones[4].setAngle(-85);
+				bones[5].setAngle(-110);
+			
+				bones[6].setAngle(-80);
+				bones[7].setAngle(-75);
+			
+				bones[8].setAngle(-70);
+				bones[9].setAngle(-65);
+				
+				
+
+			}
+		
+			
+			
+			
+			
+		}
+		else if(hero.getState() == HStateComp.JUMPL)
+		{
+			bones[1].setAngle(-75);
+			bones[2].setAngle(170);
+			bones[3].setAngle(135);
+		
+			bones[4].setAngle(-10);
+			bones[5].setAngle(-55);
+		
+			bones[6].setAngle(-90);
+			bones[7].setAngle(0);
+		
+			bones[8].setAngle(-55);
+			bones[9].setAngle(-55);
 		}
 		bones[0].position.x =hero.position.x+hero.width/2;
 		bones[0].position.y = hero.position.y+this.getHeight();

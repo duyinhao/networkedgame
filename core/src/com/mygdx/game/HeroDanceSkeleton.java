@@ -2,7 +2,9 @@ package com.mygdx.game;
 
 import java.util.ArrayList;
 
+import Model.Bone;
 import Model.HStates;
+import Model.Skeleton;
 
 public class HeroDanceSkeleton implements Skeleton {
 	public Bone[] bones = new Bone[10];

@@ -22,17 +22,17 @@ public class IDListener  extends Listener {
 		{
 			IDResponse response = ((IDResponse)object);
 			this.wrl.user.heroID = response.id;
-			wrl.hero.position = response.hero.position;
+			wrl.hero.copy(response.hero);
 			wrl.hero.id = response.id;
 			wrl.heroArr.arr[response.id] = wrl.hero;
 			
-			if(wrl.heroArr.size < response.id)
+			if(wrl.heroArr.size <= response.id)
 			{
-				wrl.heroArr.size = response.id + 1;
+				wrl.heroArr.size = response.id+1 ;
 			}
 			
 			this.wrl.entityArr.add(wrl.hero);
-			
+			System.out.println(wrl.hero.height);
 			System.out.println("received ID:"+ response.id);
 			
 			

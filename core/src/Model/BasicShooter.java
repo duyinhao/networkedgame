@@ -11,22 +11,27 @@ public class BasicShooter implements Equipable {
 		if(justPressed)
 		{
 			
-		Hero hero = wrl.hero;
-		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
+			Hero hero = wrl.hero;
+			
+			
+			//Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
+			Vector2 bulletVelocity = new Vector2(hero.weaponBone.tailPointPosition.x - hero.weaponBone.position.x,hero.weaponBone.tailPointPosition.y - hero.weaponBone.position.y);
+			
+			
+			bulletVelocity = bulletVelocity.scl(500/bulletVelocity.magnitude());
+			
+			
+			Vector2 startingPoint = hero.weaponBone.tailPointPosition;
+			
+		//	wrl.hero.velocity = new Vector2(-1f,10f);
+			
 		
-		Vector2 relativeStartingPoint = bulletVelocity.scl(length/bulletVelocity.magnitude());
-		bulletVelocity = bulletVelocity.scl(500/bulletVelocity.magnitude());
 		
-		
-		
-		
-		Vector2 charMidpoint = new Vector2(hero.position.x + hero.width/2,hero.position.y+hero.height/2);
 		
 		//this code is shit because of void add, rename
-		charMidpoint.add(relativeStartingPoint.scl(0.7f));
 		
 		
-		wrl.entLis.add(new Bullet( (int)(charMidpoint.x )-27,(int)(charMidpoint.y)-27,54,54,bulletVelocity));
+		wrl.entLis.add(new Bullet( (int)startingPoint.x-27,(int)startingPoint.y-27,54,54,bulletVelocity));
 		}
 		
 	}
@@ -37,6 +42,8 @@ public class BasicShooter implements Equipable {
 		{
 		Hero hero = wrl.hero;
 		Vector2 bulletVelocity = new Vector2(mouseX - hero.position.x, mouseY - hero.position.y);
+		
+		
 		bulletVelocity = bulletVelocity.scl(100/bulletVelocity.magnitude());
 		
 		

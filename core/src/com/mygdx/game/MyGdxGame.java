@@ -8,6 +8,7 @@ package com.mygdx.game;
 
 
 import java.io.IOException;
+import java.rmi.server.Skeleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import Model.BasicArmor;
 import Model.BasicCape;
 import Model.BasicShoes;
 import Model.BasicShooter;
+import Model.Bone;
 import Model.Bullet;
 import Model.CloudBullet;
 import Model.BulletState;
@@ -39,8 +41,10 @@ import Model.Equipable;
 import Model.HStates;
 import Model.Hero;
 import Model.HeroArr;
+import Model.HeroSkeleton;
 import Model.IDResponse;
 import Model.LocalWorld;
+import Model.PaintShooter;
 import Model.Quadtree;
 import Model.User;
 import Model.Vector2;
@@ -201,7 +205,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		
 		AnimationBinding<BulletState> bulletBinding = new AnimationBinding<BulletState>();
-		bulletSprite = new Texture(Gdx.files.internal("bullet400.png"));
+		bulletSprite = new Texture(Gdx.files.internal("bulletC.png"));
 		
 		TextureRegion bulletRegion = new TextureRegion(bulletSprite);
 		
@@ -247,6 +251,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		walkFrames[1] = tmp[3][1];
 		walkFrames[2] = tmp[4][1];
 		walkFrames[3] = tmp[3][1];
+		
 		
 		
 		walkAnimationR = new Animation(0.1f, walkFrames);
@@ -308,10 +313,14 @@ public class MyGdxGame extends ApplicationAdapter{
 		 Kryo kryo = client.getKryo();
 		 	
 		 	kryo.register(AEPaintBullet.class);
+		 	kryo.register(ArrayList.class);
 			kryo.register(BasicArmor.class);
 			kryo.register(BasicCape.class);
 			kryo.register(BasicShoes.class);
 			kryo.register(BasicShooter.class);
+			kryo.register(Bone.class);
+			kryo.register(Model.Bone[].class);
+			
 			kryo.register(Bullet.class);
 			kryo.register(BulletState.class);
 			kryo.register(CloudBullet.class);
@@ -327,8 +336,12 @@ public class MyGdxGame extends ApplicationAdapter{
 			
 			
 			kryo.register(Hero.class);
+			kryo.register(HeroSkeleton.class);
 			kryo.register(HStates.class);
 			kryo.register(IDResponse.class);
+			
+			
+			kryo.register(PaintShooter.class);
 			kryo.register(Vector2.class);
 		
 		client.start();
@@ -382,12 +395,11 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		///public HeroSkeleton(int headXPos, int headYPos ,int thighLength, int shinLength, int bodyLength, int bicepLength, int forearmLength, int headLength )
 
-		heroSkeleton = new  HeroSkeleton(100, 1500 ,19, 18,19, 18, 18, 20 );
+		heroSkeleton = wrl.hero.heroSkeleton;
 		heroDanceSkeleton = new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
 		//heroSkeleton = new  HeroSkeleton(100, 1500 ,5, 10,4, 4, 4, 4 );
-		heroSkeletonAnimator = new SkeletonAnimator(heroSkeleton,wrl.hero );
 		
-		
+		heroSkeletonAnimator = new SkeletonAnimator(wrl.hero );
 		
 		heroSkeletonAnimator.register(0, new TextureRegion(heroHead1), 22, 21);
 		
@@ -424,13 +436,13 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		heroSkeletonAnimator.register(16, new TextureRegion(heroTrunk), 9, 15);
 		
-		heroSkeletonAnimator.register(17, new TextureRegion(heroLeg1), 12, 15);
+		heroSkeletonAnimator.register(17, new TextureRegion(heroLeg1), 12, 25);
 		
 		heroSkeletonAnimator.register(18, new TextureRegion(heroTrunk),9, 15);
 
-		heroSkeletonAnimator.register(19, new TextureRegion(heroLeg1), 12, 15);
+		heroSkeletonAnimator.register(19, new TextureRegion(heroLeg1), 12, 25);
 		
-		heroSkeletonAnimator.registerWeaponGrahic(new TextureRegion(paintBrushSprite), 57, 57);
+		heroSkeletonAnimator.registerWeaponGrahic(new TextureRegion(paintBrushSprite), 57, 48);
 		//always add the listener first before the requests otherwise wont register response
 		//pehpaps a different structure is need to avoid this annoying bug
 		client.addListener(new IDListener(wrl));
@@ -582,24 +594,33 @@ public class MyGdxGame extends ApplicationAdapter{
 			
 			currentFrame = currentAnimation.getKeyFrame(stateTime);	
 			if(!(entity instanceof Bullet))
+			//if(!entity.getClass().isAssignableFrom(Bullet.class))
+			{
 				batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+			}
 			else
 			{
+				System.out.println("Theres a bullets at x:"+entity.position.x+"y:"+entity.position.y);
+
 				Bullet temp = (Bullet)entity;
 				//batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
 				float xPos = entity.position.x + currentAnimationBinding.xOffset ;
 				float yPos = currentAnimationBinding.yOffset +entity.position.y;
-				float angle = (float)Math.toDegrees(Math.atan(temp.velocity.y/temp.velocity.x));
+				float angle = (float)Math.toDegrees(Math.atan2(temp.velocity.y,temp.velocity.x));
 				
-				if(temp.velocity.x < 0)
-				{
-					angle = angle + 180;
-				}
+//				if(temp.velocity.x < 0)
+//				{
+//					angle = angle + 180;
+//				}
+				//batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+				//batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
+
+				batch.draw(currentFrame,xPos + entity.width/2-currentFrame.getRegionWidth()/2, yPos + entity.height/2-currentFrame.getRegionHeight()/2 ,  currentFrame.getRegionWidth()/2 ,currentFrame.getRegionHeight()/2 , currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1f, 1f, angle);
 				
-				batch.draw(currentFrame,xPos , yPos,  currentFrame.getRegionWidth()/2 ,currentFrame.getRegionHeight()/2 , currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1f, 1f, angle);
-				//batch.draw(currentFrame, (float)(currentAnimationBinding.xOffset + entity.position.x-currentFrame.getRegionWidth()/2 ), (float)(currentAnimationBinding.yOffset +entity.position.y -currentFrame.getRegionHeight()/2) , (float)currentFrame.getRegionWidth()/2, (float) currentFrame.getRegionHeight()/2,  currentFrame.getRegionHeight(),currentFrame.getRegionWidth(), 1f, 1f,0f , true);
 				
-				
+				//batch.draw(currentFrame, (float)(currentAnimationBinding.xOffset + entity.position.x-currentFrame.getRegionWidth()/2 ), (float)(currentAnimationBinding.yOffset +entity.position.y -currentFrame.getRegionHeight()/2) , (float)currentFrame.getRegionWidth()/2, (float) currentFrame.getRegionHeight()/2,  currentFrame.getRegionWidth(),currentFrame.getRegionHeight(), 1f, 1f,0f , true);
+				//System.out.println(currentFrame.getRegionWidth()/2);
+				//System.out.println(angle);
 				
 			//	batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation, clockwise);
 				
@@ -637,7 +658,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		//angle = angle*Math.PI/180;
 		angle = Math.toDegrees(angle);
 		//System.out.println(Math.toDegrees(angle));
-		batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
+	//	batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
 		
 		
 		//remember the width and length determine shape of bone, not the image
@@ -654,7 +675,7 @@ public class MyGdxGame extends ApplicationAdapter{
 			Bone currentBone = heroSkeleton.bones[i];
 			batch.draw(new TextureRegion(boneSprite), currentBone.position.x, currentBone.position.y, 0f, 0f, currentBone.length , 2f, 1, 1, currentBone.angle);
 			//System.out.println(currentBone.tailPointPosition.y);
-			batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
+			//batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
 
 		}
 	

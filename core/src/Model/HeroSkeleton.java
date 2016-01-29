@@ -1,8 +1,6 @@
-package com.mygdx.game;
+package Model;
 
 import java.util.ArrayList;
-
-import Model.HStates;
 
 public class HeroSkeleton implements Skeleton {
 	public Bone[] bones = new Bone[11];
@@ -20,6 +18,27 @@ public class HeroSkeleton implements Skeleton {
 	// 9 -- shin1
 	//10 weapon
 	float counter;
+	public HeroSkeleton()
+	{
+		bones[0] = new  Bone(0 ,0  , 0, 270);
+		bones[1]  = new  Bone(bones[0], 0, 270);
+		
+		bones[2]  = new  Bone(bones[0], 0, 225);
+		bones[3]  = new  Bone(bones[2], 0, 270);
+		
+		bones[4]  = new  Bone(bones[0], 0, 315);
+		bones[5] = new Bone(bones[4], 0, 270);
+		
+		bones[6] = new Bone(bones[1], 0, 315);
+		bones[7] = new Bone(bones[6], 0, 270);
+		
+		bones[8] = new Bone(bones[1], 0, 225);
+		bones[9] = new Bone(bones[8], 0, 270);
+		//
+		bones[10] = new Bone(bones[0], 0 , 0);
+		counter = 0;
+	}
+	
 	
 	public HeroSkeleton(int headXPos, int headYPos ,int thighLength, int shinLength, int bodyLength, int bicepLength, int forearmLength, int headLength )
 	{

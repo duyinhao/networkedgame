@@ -1,14 +1,12 @@
-package com.mygdx.game;
+package Model;
 
 import java.util.ArrayList;
 
-import Model.Vector2;
-
 public class Bone {
-	Vector2 position;
-	Vector2 tailPointPosition;
-	float angle;
-	float length;
+	public Vector2 position;
+	public Vector2 tailPointPosition;
+	public float angle;
+	public float length;
 	ArrayList<Bone> attachments;
 	public Bone()
 	{

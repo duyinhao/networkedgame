@@ -20,7 +20,8 @@ public BasicShoes shoes;
 public BasicArmor armor;
 public BasicCape cape;
 public int health;
-
+public HeroSkeleton heroSkeleton;
+public Bone weaponBone;
 	public Hero()
 	{
 		super(new Vector2(0,0), 0,0);
@@ -35,6 +36,8 @@ public int health;
 		this.armor = new BasicArmor();
 		this.cape = new BasicCape();
 		this.health = 100;
+		this.heroSkeleton=new  HeroSkeleton(100, 1500 ,19, 18,19, 18, 18, 20 );
+		weaponBone = new Bone(heroSkeleton.getBones()[0], 100, 0);
 	}
 	public Hero(int x , int y)
 	{
@@ -48,6 +51,8 @@ public int health;
 		this.armor = new BasicArmor();
 		this.cape = new BasicCape();
 		this.health = 100;
+		this.heroSkeleton=new  HeroSkeleton(100, 1500 ,19, 18,19, 18, 18, 20 );
+		weaponBone = new Bone(heroSkeleton.getBones()[0], 100, 0);
 	}
 	
 	public Hero(int x , int y, int width, int height)
@@ -65,6 +70,8 @@ public int health;
 		this.cape = new BasicCape();
 		//this.cape = new DashCape();
 		this.health = 100;
+		this.heroSkeleton=new  HeroSkeleton(100, 1500 ,19, 18,19, 18, 18, 20 );
+		weaponBone = new Bone(heroSkeleton.getBones()[0],100, 0);
 	}
 	
 	public void setX(float x)

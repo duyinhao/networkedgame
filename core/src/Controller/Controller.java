@@ -1,6 +1,7 @@
 package Controller;
 
 
+import Model.Bone;
 import Model.DStates;
 import Model.HStates;
 import Model.Hero;
@@ -30,6 +31,31 @@ public class Controller {
 	}
 	public void update(float deltaTime)
 	{
+		
+		float xPos = Gdx.input.getX();
+		float yPos = Gdx.input.getY();
+		Vector3 tempVec= camera.unproject(new Vector3( xPos,yPos,0));
+		Bone weaponBone;
+		weaponBone = wrl.hero.weaponBone;
+		float angle = (float)Math.toDegrees(Math.atan2((tempVec.y -weaponBone.position.y),(tempVec.x -weaponBone.position.x)));
+		//weaponBone.angle= angle;
+		weaponBone.setAngle(angle);
+		System.out.println((tempVec.y -weaponBone.position.y));
+//		int screenX = Gdx.input.getX();
+//		int screenY = Gdx.input.getY();
+//		Vector3 heroScreenVector3 = camera.project(new Vector3((float)wrl.hero.position.x+wrl.hero.width/2,(float) wrl.hero.position.y-wrl.hero.height/2,0));
+//		
+//		double angle = Math.atan2( heroScreenVector3.y-screenY -10, screenX - heroScreenVector3.x);
+//		
+//		angle = Math.toDegrees(angle);
+		
+		
+//		if(temp.velocity.x < 0)
+//		{
+//			angle = angle + 180;
+//		}
+		
+		//batch.draw(currentFrame, (float)(currentAnimationBinding.xOffset + entity.position.x-currentFrame.getRegionWidth()/2 ), (float)(currentAnimationBinding.yOffset +entity.position.y -currentFrame.getRegionHeight()/2) , (float)currentFrame.getRegionWidth()/2, (float) currentFrame.getRegionHeight()/2,  currentFrame.getRegionHeight(),currentFrame.getRegionWidth(), 1f, 1f,0f , true);
 		
 		
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
