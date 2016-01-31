@@ -26,5 +26,9 @@ public class BasicCape implements Equipable{
 	{
 		
 	}
+	public void equip(Hero hero)
+	{
+		hero.cape = this;
+	}
 
 }

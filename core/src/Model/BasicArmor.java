@@ -26,5 +26,9 @@ public class BasicArmor implements Equipable{
 	{
 		
 	}
+	public void equip(Hero hero)
+	{
+		hero.armor = this;
+	}
 	
 }

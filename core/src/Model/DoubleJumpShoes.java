@@ -45,5 +45,9 @@ public class DoubleJumpShoes extends BasicShoes{
 	{
 		
 	}
+	public void equip(Hero hero)
+	{
+		hero.shoes = this;
+	}
 
 }

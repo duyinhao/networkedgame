@@ -10,6 +10,7 @@ import Model.LocalWorld;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.kryonet.Client;
 import com.mygdx.game.MyGdxGame;
@@ -21,6 +22,7 @@ public class Controller {
 	LocalWorld wrl;
 	Client client;
 	OrthographicCamera camera;
+	
 	public Controller(OrthographicCamera camera ,Input input, LocalWorld localWorld,Client client)
 	{
 		this.input = input;
@@ -40,7 +42,7 @@ public class Controller {
 		float angle = (float)Math.toDegrees(Math.atan2((tempVec.y -weaponBone.position.y),(tempVec.x -weaponBone.position.x)));
 		//weaponBone.angle= angle;
 		weaponBone.setAngle(angle);
-		System.out.println((tempVec.y -weaponBone.position.y));
+		//System.out.println((tempVec.y -weaponBone.position.y));
 //		int screenX = Gdx.input.getX();
 //		int screenY = Gdx.input.getY();
 //		Vector3 heroScreenVector3 = camera.project(new Vector3((float)wrl.hero.position.x+wrl.hero.width/2,(float) wrl.hero.position.y-wrl.hero.height/2,0));

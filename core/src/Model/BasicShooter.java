@@ -70,7 +70,10 @@ public class BasicShooter implements Equipable {
 	{
 		
 	}
-	
+	public void equip(Hero hero)
+	{
+		hero.weapon = this;
+	}
 	
 
 }

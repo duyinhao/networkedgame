@@ -6,5 +6,5 @@ public interface Equipable {
 	public void jump(float deltaTime,boolean justPressed, LocalWorld wrl);
 	public void movement(float deltaTime,DStates direction, boolean justPressed,LocalWorld wrl);
 	public void damage(float deltaTime, int damage, boolean justPressed,LocalWorld wrl);
-	
+	public void equip(Hero hero);
 }

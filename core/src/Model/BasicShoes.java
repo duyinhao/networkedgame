@@ -34,5 +34,9 @@ public class BasicShoes implements Equipable{
 	{
 		
 	}
+	public void equip(Hero hero)
+	{
+		hero.shoes = this;
+	}
 
 }

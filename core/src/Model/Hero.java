@@ -144,15 +144,24 @@ public Bone weaponBone;
 	{
 		this.armor = hero.armor;
 		this.cape = hero.cape;
+		this.weapon = hero.weapon;
+		this.shoes = hero.shoes;
 		this.direction = hero.direction;
 		this.health = hero.health;
 		this.height = hero.height;
 		this.id = hero.id;
-		this.position = hero.position;
+		//this.position = hero.position;
+		this.position.x = hero.position.x;
+		this.position.y = hero.position.y;
+		
 		this.shoes = hero.shoes;
 		this.status = hero.status;
-		this.velocity = hero.velocity;
-		this.weapon = hero.weapon;
+		//this.velocity = hero.velocity;
+		//this.heroSkeleton = hero.heroSkeleton;
+		this.velocity.x = hero.velocity.x;
+		this.velocity.y = hero.velocity.y;
+		this.weaponBone = hero.weaponBone;
+		
 		this.width = hero.width;
 	}
 	

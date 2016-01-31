@@ -135,18 +135,22 @@ public class MyGdxGame extends ApplicationAdapter{
 	Controller userController ;
 	ServerController serverController;
 	
-	SkeletonAnimator heroSkeletonAnimator; 
-	HeroSkeleton heroSkeleton;
+	//SkeletonAnimator heroSkeletonAnimator; 
+	//HeroSkeleton heroSkeleton;
 	HeroDanceSkeleton heroDanceSkeleton;
+	HeroAnimationArr heroAnim;
+	
 	@Override
 	public void create () {
 		
 		animationBinder = new HashMap<Class<?>, AnimationBinding> ();
 		entitySprite = new Texture(Gdx.files.internal("megamansoccer1.png"));
+		
 		batch = new SpriteBatch();
 		
+		heroAnim = new HeroAnimationArr();
 		
-		paintBrushSprite = new Texture(Gdx.files.internal("bazookaGunScale.png"));
+		
 		
 		spriteSheet = new Texture(Gdx.files.internal("megamansoccerEdit.png"));
 		healthBar = new Texture(Gdx.files.internal("healthBar.png"));
@@ -395,58 +399,17 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		///public HeroSkeleton(int headXPos, int headYPos ,int thighLength, int shinLength, int bodyLength, int bicepLength, int forearmLength, int headLength )
 
-		heroSkeleton = wrl.hero.heroSkeleton;
+		//heroSkeleton = wrl.hero.heroSkeleton;
 		heroDanceSkeleton = new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
 		//heroSkeleton = new  HeroSkeleton(100, 1500 ,5, 10,4, 4, 4, 4 );
 		
-		heroSkeletonAnimator = new SkeletonAnimator(wrl.hero );
+		//heroSkeletonAnimator = new SkeletonAnimator(wrl.hero );
 		
-		heroSkeletonAnimator.register(0, new TextureRegion(heroHead1), 22, 21);
-		
-		heroSkeletonAnimator.register(1, new TextureRegion(heroBody), 10, 20);
-		
-		heroSkeletonAnimator.register(2, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(3, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(4, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(5, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(6, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(7, new TextureRegion(heroLeg2), 12, 15);
-		
-		heroSkeletonAnimator.register(8, new TextureRegion(heroTrunk),9, 15);
-
-		heroSkeletonAnimator.register(9, new TextureRegion(heroLeg2), 12, 15);
-		
-		
-		heroSkeletonAnimator.register(10, new TextureRegion(heroHead2), 22, 21);
-		
-		heroSkeletonAnimator.register(11, new TextureRegion(heroBody), 10, 20);
-		
-		heroSkeletonAnimator.register(12, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(13, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(14, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(15, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(16, new TextureRegion(heroTrunk), 9, 15);
-		
-		heroSkeletonAnimator.register(17, new TextureRegion(heroLeg1), 12, 25);
-		
-		heroSkeletonAnimator.register(18, new TextureRegion(heroTrunk),9, 15);
-
-		heroSkeletonAnimator.register(19, new TextureRegion(heroLeg1), 12, 25);
-		
-		heroSkeletonAnimator.registerWeaponGrahic(new TextureRegion(paintBrushSprite), 57, 48);
+	
 		//always add the listener first before the requests otherwise wont register response
 		//pehpaps a different structure is need to avoid this annoying bug
-		client.addListener(new IDListener(wrl));
-		client.addListener(new HeroListener(wrl.heroArr, wrl.entityArr));
+		client.addListener(new IDListener(wrl,heroAnim));
+		client.addListener(new HeroListener(wrl.heroArr, wrl.entityArr, heroAnim));
 		
 		//change this to a proper request
 		client.sendTCP(new Hero(100,1600,20,35));
@@ -534,7 +497,7 @@ public class MyGdxGame extends ApplicationAdapter{
 //			System.out.println(temp);
 //		}
 //		
-	
+		
 		
 	}
 
@@ -546,7 +509,7 @@ public class MyGdxGame extends ApplicationAdapter{
 	    
 	    
 	    heroDanceSkeleton.update(deltaTime);
-	    heroSkeletonAnimator.update(deltaTime,wrl.hero);
+	    //heroSkeletonAnimator.update(deltaTime,wrl.hero);
 	   camera.position.x = wrl.hero.position.x;
 	   camera.position.y = wrl.hero.position.y;
 	   
@@ -600,7 +563,7 @@ public class MyGdxGame extends ApplicationAdapter{
 			}
 			else
 			{
-				System.out.println("Theres a bullets at x:"+entity.position.x+"y:"+entity.position.y);
+				//System.out.println("Theres a bullets at x:"+entity.position.x+"y:"+entity.position.y);
 
 				Bullet temp = (Bullet)entity;
 				//batch.draw(currentFrame, currentAnimationBinding.xOffset + entity.position.x, currentAnimationBinding.yOffset +entity.position.y);
@@ -641,7 +604,7 @@ public class MyGdxGame extends ApplicationAdapter{
 				
 			
 			}
-			batch.draw(entitySprite , entity.position.x, entity.position.y, entity.width, entity.height);
+			//batch.draw(entitySprite , entity.position.x, entity.position.y, entity.width, entity.height);
 
 			//batch.draw(bulletSprite, entity.position.x, entity.position.y);
 		}
@@ -663,26 +626,37 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		//remember the width and length determine shape of bone, not the image
 	//	batch.draw(new TextureRegion(boneSprite), (float)testBone.position.x,(float) testBone.position.y, 0f , 0f, boneSprite.getWidth(),boneSprite.getHeight(), 1f, 1f, testBone.angle);
-	//	batch.draw(new TextureRegion(boneSprite), (float)testBone1.position.x,(float) testBone1.position.y, 0f , 0f, boneSprite.getWidth(), boneSprite.getHeight(), 1f, 1f, testBone1.angle);
+	//	batch.draw(new TextureRegion(heroSkeletonboneSprite), (float)testBone1.position.x,(float) testBone1.position.y, 0f , 0f, boneSprite.getWidth(), boneSprite.getHeight(), 1f, 1f, testBone1.angle);
 	//	batch.draw(new TextureRegion(boneSprite), (float)testBone1.position.x,(float) testBone1.position.y, 0f , 0f, boneSprite.getWidth(), boneSprite.getHeight(), 1f, 1f, testBone1.angle);
 
 		
 		//batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 		//testBone.rotateAntiClockWise(1f);
 		//testBone1.rotateAntiClockWise(-1f);
-		for(int i = 0; i < heroSkeleton.bones.length; i++)
-		{
-			Bone currentBone = heroSkeleton.bones[i];
-			batch.draw(new TextureRegion(boneSprite), currentBone.position.x, currentBone.position.y, 0f, 0f, currentBone.length , 2f, 1, 1, currentBone.angle);
-			//System.out.println(currentBone.tailPointPosition.y);
-			//batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
-
-		}
+//		for(int i = 0; i < heroSkeleton.bones.length; i++)
+//		{
+//			Bone currentBone = heroSkeleton.bones[i];
+//			batch.draw(new TextureRegion(boneSprite), currentBone.position.x, currentBone.position.y, 0f, 0f, currentBone.length , 2f, 1, 1, currentBone.angle);
+//			//System.out.println(currentBone.tailPointPosition.y);
+//			//batch.draw(new TextureRegion(paintBrushSprite), (float)wrl.hero.position.x+wrl.hero.width/2, (float) wrl.hero.position.y+wrl.hero.height/2,0f, 10f, 118f, 52f, 1f, 1f,(float)angle);
+//
+//		}
 	
 		//batch.draw(new TextureRegion(boneSprite), 1500, 400, 0f, 0f, 100f , 10f, 1, 1, 0);
 		//heroSkeleton.bones[1].angle +=1f;
 		
-		heroSkeletonAnimator.draw(batch);
+		//heroSkeletonAnimator.draw(batch);
+		
+		
+		for(int i = 0; i < heroAnim.size; i++)
+		{
+			if(heroAnim.arr[i]!= null)
+			{
+				heroAnim.arr[i].draw(batch);
+				heroAnim.arr[i].update(deltaTime, wrl.heroArr.arr[i]);
+				System.out.println("sheeeeee");
+			}
+		}
 		
 		
 		//0 -- head

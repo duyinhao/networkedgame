@@ -5,11 +5,13 @@ import Model.DStates;
 import Model.Hero;
 import Model.Skeleton;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class SkeletonAnimator {
-	public Skeleton skeleton;
+	//public Skeleton skeleton;
 	public PinGraphic[] boneGraphics;
 	
 	//used to store all graphics
@@ -22,16 +24,22 @@ public class SkeletonAnimator {
 	
 	public SkeletonAnimator( Hero hero)
 	{
-		this.skeleton = hero.heroSkeleton;
+		Skeleton skeleton = hero.heroSkeleton;
+		//this.skeleton = hero.heroSkeleton;
 		boneGraphics = new PinGraphic[skeleton.getBones().length];
 		graphics = new PinGraphic[skeleton.getBones().length*2];
 		counter = 0;
 		this.hero = hero;
 		
+		
+		
+		
+	
 	}
 	
 	public void draw(SpriteBatch batch)
 	{
+		Skeleton skeleton = hero.heroSkeleton;
 		if(hero.direction ==DStates.RIGHT )
 		{
 			for(int i = 0 ; i <= 9 ; i++)
@@ -61,12 +69,13 @@ public class SkeletonAnimator {
 		{
 			Bone currentBone = hero.weaponBone;
 			PinGraphic currentGraphic = weaponGraphic;
-			batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
+		//	batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
 		}
 	}
 	public void update(float deltaTime,Hero hero)
 	{
 		counter+=deltaTime;
+		Skeleton skeleton = hero.heroSkeleton;
 		//System.out.println(counter);
 		Bone[] bones = skeleton.getBones();
 		
@@ -202,9 +211,10 @@ public class SkeletonAnimator {
 			bones[8].setAngle(-55);
 			bones[9].setAngle(-55);
 		}
+		System.out.println(this.getHeight());
 		bones[0].position.x =hero.position.x+hero.width/2;
 		bones[0].position.y = hero.position.y+this.getHeight();
-
+		
 	//	System.out.println(this.getHeight());
 		//hero.height = (int)this.getHeight();
 		
@@ -234,6 +244,7 @@ public class SkeletonAnimator {
 	}
 	public float getHeight()
 	{
+		Skeleton skeleton = hero.heroSkeleton;
 		Bone[] bones = skeleton.getBones();
 		return bones[0].position.y - Math.min(bones[9].tailPointPosition.y,bones[7].tailPointPosition.y);
 	}

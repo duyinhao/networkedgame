@@ -38,5 +38,9 @@ public class DashCape extends BasicCape{
 	{
 		
 	}
+	public void equip(Hero hero)
+	{
+		hero.cape = this;
+	}
 
 }
