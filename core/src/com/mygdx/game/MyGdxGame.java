@@ -38,6 +38,7 @@ import Model.DoubleJumpShoes;
 import Model.Entity;
 import Model.EquipType;
 import Model.Equipable;
+import Model.EquipableItem;
 import Model.HStates;
 import Model.Hero;
 import Model.HeroArr;
@@ -124,6 +125,7 @@ public class MyGdxGame extends ApplicationAdapter{
 	
 	
 	
+	
 	Bone testBone;
 	Bone testBone1;
 	
@@ -159,12 +161,15 @@ public class MyGdxGame extends ApplicationAdapter{
 		testBone = new Bone(400f, 1500f  , boneSprite.getWidth(), 0);
 		testBone1 = new Bone(testBone,boneSprite.getWidth(),0);
 		
+		
+		
 		foreArmSprite = new Texture(Gdx.files.internal("foreArm.png") );
 		armSprite= new Texture(Gdx.files.internal("arm.png") );
 		bodySprite= new Texture(Gdx.files.internal("body.png") );
 		legSprite= new Texture(Gdx.files.internal("leg.png") );
 		bootSprite= new Texture(Gdx.files.internal("boot.png") );
 		headSprite = new Texture(Gdx.files.internal("head.png") );
+		
 		
 		
 		testBone.rotateLigamentAntiClockWise(30);
@@ -194,6 +199,19 @@ public class MyGdxGame extends ApplicationAdapter{
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		
 		
+		AnimationBinding<BulletState> equipabletest = new AnimationBinding<BulletState>();
+		
+		
+		
+		
+		Animation itemtest = new Animation(0.1f, new TextureRegion(heroLeg1));
+		equipabletest.register(BulletState.NONE, itemtest);
+		
+		
+		
+		animationBinder.put(EquipableItem.class, equipabletest );
+		
+		
 		AnimationBinding<BulletState> cbulletBinding = new AnimationBinding<BulletState>();
 		cBulletSprite = new Texture(Gdx.files.internal("cloudBullet.png"));
 		
@@ -216,6 +234,12 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		Animation bulletAnimation = new Animation(0.1f, bulletRegion);
 		bulletBinding.register(BulletState.NONE, bulletAnimation);
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -375,9 +399,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		{
 			for(int y = 0; y < layer.getHeight(); y++)
 			{
-				//System.out.println(y+" "+x);
 				tmpTile = layer.getCell(x, y).getTile();
-				//System.out.println(tmpTile.getId());
 				
 				if(!tmpTile.getProperties().containsKey("Collision")  )
 				{
@@ -386,7 +408,6 @@ public class MyGdxGame extends ApplicationAdapter{
 				else
 				{
 					collisionMapArr[x][y] = Integer.parseInt(tmpTile.getProperties().get("Collision",String.class)) ;
-					//System.out.println("has property");
 				}
 			}
 			
@@ -429,7 +450,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 
 		
-	
+		
 		
 		
 		
@@ -448,6 +469,15 @@ public class MyGdxGame extends ApplicationAdapter{
 		
 		Gdx.input.setInputProcessor(new inputController(camera, wrl, client));
 		entLis = new EntListener(wrl.entityArr  , client);
+		
+		
+		EquipableItem s = new EquipableItem(new Vector2(300,1600),100, 100, new CloudShooter());
+		
+		
+		wrl.entityArr.add(s);
+		
+		
+		
 //		wrl.loadColMap();
 //		System.out.println("left");
 //		temp="";
@@ -506,6 +536,7 @@ public class MyGdxGame extends ApplicationAdapter{
 	public void render () {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 	    stateTime = stateTime+  deltaTime;
+	    
 	    
 	    
 	    heroDanceSkeleton.update(deltaTime);
@@ -655,6 +686,9 @@ public class MyGdxGame extends ApplicationAdapter{
 				heroAnim.arr[i].draw(batch);
 				heroAnim.arr[i].update(deltaTime, wrl.heroArr.arr[i]);
 				System.out.println("sheeeeee");
+				
+				HeroEquip.equipRegister(heroAnim.arr[i]);
+				
 			}
 		}
 		

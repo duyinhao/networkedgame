@@ -54,7 +54,7 @@ public class SkeletonAnimator {
 		}
 		if(hero.direction ==DStates.LEFT )
 	{
-		System.out.println("left");
+		//System.out.println("left");
 			for(int i = 10 ; i <= 19 ; i++)
 			{
 				if(graphics[i]!=null)
@@ -211,7 +211,7 @@ public class SkeletonAnimator {
 			bones[8].setAngle(-55);
 			bones[9].setAngle(-55);
 		}
-		System.out.println(this.getHeight());
+		//System.out.println(this.getHeight());
 		bones[0].position.x =hero.position.x+hero.width/2;
 		bones[0].position.y = hero.position.y+this.getHeight();
 		
