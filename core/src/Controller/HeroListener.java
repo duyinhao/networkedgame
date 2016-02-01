@@ -3,9 +3,11 @@ package Controller;
 import java.util.ArrayList;
 
 import Model.AEPaintBullet;
+import Model.Bone;
 import Model.Entity;
 import Model.Hero;
 import Model.HeroArr;
+import Model.HeroSkeleton;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -67,7 +69,20 @@ public class HeroListener extends Listener {
 				
 				this.heroAnim.arr[hero.id] = new SkeletonAnimator(hero);
 				
+				
+////				this.heroArr.arr[hero.id] = hero;
+				this.heroArr.arr[hero.id].heroSkeleton = new  HeroSkeleton(100, 1500 ,19, 18,19, 18, 18, 20 );
+				 
+				this.heroArr.arr[hero.id].weaponBone= new Bone(this.heroArr.arr[hero.id].heroSkeleton.getBones()[0],100, 0);
+				this.heroArr.arr[hero.id].copy(hero);
 				SkeletonAnimator currentAnimator = heroAnim.arr[hero.id];
+				
+				if(hero.id >= this.heroArr.size)
+				{
+					this.heroArr.size = hero.id+1;
+					this.heroAnim.size = hero.id+1;
+				}
+				
 				currentAnimator.register(0, new TextureRegion(heroHead1), 22, 21);
 				
 				currentAnimator.register(1, new TextureRegion(heroBody), 10, 20);
@@ -112,17 +127,12 @@ public class HeroListener extends Listener {
 				currentAnimator.registerWeaponGrahic(new TextureRegion(paintBrushSprite), 57, 48);
 				
 				
-				if(hero.id >= this.heroArr.size)
-				{
-					this.heroArr.size = hero.id+1;
-					this.heroAnim.size = hero.id+1;
-				}
+			
 
 			}
 			
-			//this.heroArr.arr[hero.id] = hero;
+		
 			this.heroArr.arr[hero.id].copy(hero); 
-			
 			
 			
 

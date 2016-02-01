@@ -69,7 +69,7 @@ public class SkeletonAnimator {
 		{
 			Bone currentBone = hero.weaponBone;
 			PinGraphic currentGraphic = weaponGraphic;
-		//	batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
+			batch.draw(currentGraphic.graphic,currentBone.position.x-currentGraphic.xPinPos ,currentBone.position.y-currentGraphic.yPinPos , currentGraphic.xPinPos, currentGraphic.yPinPos, currentGraphic.graphic.getRegionWidth(), currentGraphic.graphic.getRegionHeight(), 1f, 1f, currentBone.angle);
 		}
 	}
 	public void update(float deltaTime,Hero hero)

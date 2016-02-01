@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Bone;
 import Model.IDResponse;
 import Model.LocalWorld;
 import Model.User;
@@ -46,7 +47,11 @@ public class IDListener  extends Listener {
 		{
 			IDResponse response = ((IDResponse)object);
 			this.wrl.user.heroID = response.id;
+			this.wrl.hero.weaponBone= new Bone(this.wrl.hero.heroSkeleton.getBones()[0],100, 0);
+			
 			wrl.hero.copy(response.hero);
+			
+			
 			
 			wrl.heroArr.arr[response.id] = wrl.hero;
 			

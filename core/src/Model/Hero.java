@@ -160,8 +160,12 @@ public Bone weaponBone;
 		//this.heroSkeleton = hero.heroSkeleton;
 		this.velocity.x = hero.velocity.x;
 		this.velocity.y = hero.velocity.y;
-		this.weaponBone = hero.weaponBone;
-		
+		//this.weaponBone = hero.weaponBone;
+		//this.weaponBone.position = hero.weaponBone.position;
+		this.weaponBone.angle = hero.weaponBone.angle;
+		this.weaponBone.length = hero.weaponBone.length;
+		this.weaponBone.updateTailPoint();
+		//this.weaponBone.updateTailPoint();
 		this.width = hero.width;
 	}
 	
