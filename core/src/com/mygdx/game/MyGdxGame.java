@@ -39,6 +39,7 @@ import Model.Entity;
 import Model.EquipType;
 import Model.Equipable;
 import Model.EquipableItem;
+import Model.GiantShoes;
 import Model.HStates;
 import Model.Hero;
 import Model.HeroArr;
@@ -471,7 +472,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		entLis = new EntListener(wrl.entityArr  , client);
 		
 		
-		EquipableItem s = new EquipableItem(new Vector2(300,1600),100, 100, new CloudShooter());
+		EquipableItem s = new EquipableItem(new Vector2(300,1600),100, 100, new GiantShoes());
 		
 		
 		wrl.entityArr.add(s);
@@ -541,9 +542,13 @@ public class MyGdxGame extends ApplicationAdapter{
 	    
 	    heroDanceSkeleton.update(deltaTime);
 	    //heroSkeletonAnimator.update(deltaTime,wrl.hero);
-	   camera.position.x = wrl.hero.position.x;
-	   camera.position.y = wrl.hero.position.y;
+	    
+	   //camera.position.x = wrl.hero.position.x;
+	   //camera.position.y = wrl.hero.position.y;
 	   
+	    
+		   camera.position.x = wrl.hero.heroSkeleton.getBones()[0].position.x;
+		   camera.position.y = wrl.hero.heroSkeleton.getBones()[0].position.y;
 	    
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -722,7 +727,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		batch.draw(new TextureRegion(bootSprite), heroDanceSkeleton.bones[7].position.x-100, heroDanceSkeleton.bones[7].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[7].angle );
 		batch.draw(new TextureRegion(legSprite), heroDanceSkeleton.bones[8].position.x-95, heroDanceSkeleton.bones[8].position.y-130, 95, 130, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[8].angle );
 		batch.draw(new TextureRegion(bootSprite), heroDanceSkeleton.bones[9].position.x-100, heroDanceSkeleton.bones[9].position.y-125, 100, 125, foreArmSprite.getWidth(), foreArmSprite.getHeight(), 1f, 1f,heroDanceSkeleton.bones[9].angle );
-
+		
 		
 		
 

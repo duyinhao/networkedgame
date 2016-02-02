@@ -67,6 +67,13 @@ public class HeroSkeleton implements Skeleton {
 		return bones;
 	}
 	
+	public void update()
+	{
+		for(int i = 0 ; i < bones.length; i++)
+		{
+			bones[i].updateTailPoint();
+		}
+	}
 	
 
 	

@@ -23,6 +23,9 @@ public class HeroDanceSkeleton implements Skeleton {
 	// 9 -- shin1
 	float counter;
 	
+	
+
+	
 	public HeroDanceSkeleton(int headXPos, int headYPos ,int thighLength, int shinLength, int bodyLength, int bicepLength, int forearmLength, int headLength )
 	{
 		bones[0] = new  Bone(headXPos , headYPos  , headLength, 270);
