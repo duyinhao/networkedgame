@@ -1,9 +1,14 @@
 package Model;
 
+import com.mygdx.game.HeroDanceSkeleton;
+
 public class GiantShoes extends BasicShoes {
 
 	public void equip(Hero hero)
 	{
+		
+		new HeroDanceSkeleton(800, 500 ,220, 200,220, 190, 200, 170 );
+		
 		hero.shoes = this;
 		hero.heroSkeleton.bones[9].length = 220;
 		hero.heroSkeleton.bones[7].length = 220;

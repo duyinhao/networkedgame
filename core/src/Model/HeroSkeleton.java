@@ -74,6 +74,10 @@ public class HeroSkeleton implements Skeleton {
 			bones[i].updateTailPoint();
 		}
 	}
+	public float getStandingHeight()
+	{
+		return bones[0].length+bones[1].length+bones[8].length+bones[9].length;
+	}
 	
 
 	

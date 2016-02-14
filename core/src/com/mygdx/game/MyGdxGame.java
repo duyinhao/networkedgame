@@ -341,7 +341,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		 Client client = new Client();
 		 Kryo kryo = client.getKryo();
 		 	
-		 	kryo.register(AEPaintBullet.class);
+		 kryo.register(AEPaintBullet.class);
 		 	kryo.register(ArrayList.class);
 			kryo.register(BasicArmor.class);
 			kryo.register(BasicCape.class);
@@ -361,7 +361,9 @@ public class MyGdxGame extends ApplicationAdapter{
 			kryo.register(DStates.class);
 			kryo.register(Entity.class);
 			kryo.register(Equipable.class);
+			kryo.register(EquipableItem.class);
 			kryo.register(EquipType.class);
+			kryo.register(GiantShoes.class);
 			
 			
 			kryo.register(Hero.class);
@@ -415,7 +417,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		}
 		if(client == null)
 		{
-			System.out.println("fudge");
+			System.out.println("client is null");
 		}
 		wrl = new LocalWorld(collisionMapArr,(int) layer.getTileWidth() ,client );
 		
@@ -472,7 +474,7 @@ public class MyGdxGame extends ApplicationAdapter{
 		entLis = new EntListener(wrl.entityArr  , client);
 		
 		
-		EquipableItem s = new EquipableItem(new Vector2(300,1600),100, 100, new GiantShoes());
+		EquipableItem s = new EquipableItem(new Vector2(300,900),100, 100, new GiantShoes());
 		
 		
 		wrl.entityArr.add(s);
@@ -504,7 +506,7 @@ public class MyGdxGame extends ApplicationAdapter{
 //			System.out.println(temp);
 //		}
 //		
-		System.out.println("down");
+//		System.out.println("down");
 		temp="";
 		for(int y = height-1; y >= 0; y--)
 		{
@@ -513,7 +515,7 @@ public class MyGdxGame extends ApplicationAdapter{
 			{
 				temp = temp + wrl.colSystem.downColMap[x][y] ; 
 			}
-			System.out.println(temp);
+			//System.out.println(temp);
 		}
 		
 //		System.out.println("up");
@@ -548,7 +550,14 @@ public class MyGdxGame extends ApplicationAdapter{
 	   
 	    
 		   camera.position.x = wrl.hero.heroSkeleton.getBones()[0].position.x;
-		   camera.position.y = wrl.hero.heroSkeleton.getBones()[0].position.y;
+		   camera.position.y = wrl.hero.position.y;
+		   
+		   
+		   
+		   if(camera.zoom <Math.sqrt(wrl.hero.height)/Math.sqrt(76))
+			   camera.zoom += (double)0.2*deltaTime; 
+		   
+			   
 	    
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -690,7 +699,7 @@ public class MyGdxGame extends ApplicationAdapter{
 			{
 				heroAnim.arr[i].draw(batch);
 				heroAnim.arr[i].update(deltaTime, wrl.heroArr.arr[i]);
-				System.out.println("sheeeeee");
+				//System.out.println("sheeeeee");
 				
 				HeroEquip.equipRegister(heroAnim.arr[i]);
 				

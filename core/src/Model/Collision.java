@@ -142,12 +142,13 @@ public class Collision {
 		//System.out.println(tileX+" "+tileY);
 		
 		//this basically means that we consider areas outside of the the map to be a wall technically
-		if(x<0|| x>upColMap.length*tileWidth||y<0 || y>upColMap[0].length*tileWidth)
+		if(tileX<0|| tileX>=upColMap.length||tileY<0 || tileY>=upColMap[0].length)
 		{
 			return 0;
 			
 		}
 		//if the point is already in a wall, then of course the distance to the wall is 0
+		
 		if(collisionMapArr[tileX][tileY] == 1)
 		{
 			return 0;

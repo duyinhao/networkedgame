@@ -134,6 +134,8 @@ public Bone weaponBone;
 	{
 		//this.position.add(this.velocity.scl(deltaTime));
 		//this.position.add(this.velocity.scl(1f));
+		this.height = Math.round(this.heroSkeleton.getStandingHeight());
+		System.out.println(this.heroSkeleton.getStandingHeight());
 	}
 	@Override
 	public HStateComp getState()

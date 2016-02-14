@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import Model.BasicArmor;
 import Model.BasicShoes;
 import Model.BasicShooter;
 import Model.CloudShooter;
@@ -15,12 +16,12 @@ public class HeroEquip {
 	static Texture bazookaSprite =  new Texture(Gdx.files.internal("bazookaGunScale.png")); 
 	static Texture cloudGunSprite = new Texture(Gdx.files.internal("cloudGun.png"));
 
-	Texture foreArmSprite  = new Texture(Gdx.files.internal("foreArm.png") );
-	Texture armSprite= new Texture(Gdx.files.internal("arm.png") );
-	Texture bodySprite= new Texture(Gdx.files.internal("body.png") );
+	static Texture foreArmSprite  = new Texture(Gdx.files.internal("foreArm.png") );
+	static Texture armSprite= new Texture(Gdx.files.internal("arm.png") );
+	static Texture bodySprite= new Texture(Gdx.files.internal("body.png") );
 	static Texture legSprite= new Texture(Gdx.files.internal("leg.png") );
 	static Texture bootSprite= new Texture(Gdx.files.internal("boot.png") );
-	Texture headSprite= new Texture(Gdx.files.internal("head.png") );
+	static Texture headSprite= new Texture(Gdx.files.internal("head.png") );
 	
 	
 	Texture heroHead1= new Texture(Gdx.files.internal("heroHead1.png"));
@@ -90,6 +91,25 @@ public class HeroEquip {
 			
 		
 		}
+		if(heroAnim.hero.armor.getClass() == BasicArmor.class)
+		{
+			SkeletonAnimator currentAnimator = heroAnim ;
+			
+			currentAnimator.register(0, new TextureRegion(headSprite), 130, 120);
+			
+			currentAnimator.register(1, new TextureRegion(bodySprite), 90, 160);
+			
+			currentAnimator.register(2, new TextureRegion(armSprite),60, 150);
+
+			currentAnimator.register(3, new TextureRegion(foreArmSprite), 70, 130);
+			
+			currentAnimator.register(4, new TextureRegion(armSprite), 60, 150);
+			
+			currentAnimator.register(5, new TextureRegion(foreArmSprite), 70, 130);
+			
+		
+		}
+		
 		
 	}
 
